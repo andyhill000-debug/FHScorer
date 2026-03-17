@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hillfred's 500 Scorer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f3f4f6; user-select: none; -webkit-tap-highlight-color: transparent; }
+        input, select, textarea { user-select: text; }
+        .container { max-width: 1200px; margin: 0 auto; padding: clamp(10px, 3vw, 20px); }
+        .header { background: #fafafa; padding: clamp(20px, 5vw, 30px); border-radius: 12px; margin-bottom: clamp(15px, 4vw, 30px); border: 2px solid #e5e7eb; }
+        .header h2 { margin: 0; font-size: clamp(18px, 4vw, 24px); color: #1a1a1a; font-weight: 600; text-align: center; }
+        .view-selector { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: clamp(15px, 3vw, 20px); margin-bottom: clamp(15px, 4vw, 30px); }
+        .view-selector-inner { display: flex; flex-direction: row; gap: clamp(15px, 3vw, 20px); align-items: center; flex-wrap: wrap; }
+        @media (max-width: 600px) { .view-selector-inner { flex-direction: column; align-items: flex-start; } }
+        .radio-label { display: flex; align-items: center; cursor: pointer; font-size: clamp(15px, 2.5vw, 16px); font-weight: 600; padding: 8px 0; }
+        .radio-label input[type="radio"] { margin-right: 10px; width: 20px; height: 20px; cursor: pointer; }
+        .team-scores { display: grid; grid-template-columns: 1fr; gap: clamp(15px, 3vw, 20px); margin-bottom: clamp(15px, 4vw, 30px); }
+        @media (min-width: 768px) { .team-scores { grid-template-columns: 1fr 1fr; } }
+        .team-box { padding: clamp(15px, 3vw, 20px); border-radius: 12px; color: white; cursor: pointer; transition: all 0.2s; }
+        .team-box.team1 { background: #1a1a1a; }
+        .team-box.team2 { background: #00d4aa; }
+        .team-box.selected1 { border: 4px solid #3a3a3a; box-shadow: 0 0 0 2px #1a1a1a; }
+        .team-box.selected2 { border: 4px solid #00b894; box-shadow: 0 0 0 2px #00d4aa; }
+        .team-box.unselected { border: 4px solid transparent; }
+        .team-input { background: rgba(255,255,255,0.2); border: none; padding: clamp(8px, 2vw, 10px); border-radius: 6px; color: white; font-size: clamp(16px, 3vw, 18px); font-weight: 600; width: 70%; }
+        .team-input::placeholder { color: rgba(255,255,255,0.7); }
+        .player-input { background: rgba(255,255,255,0.2); border: none; padding: clamp(6px, 1.5vw, 8px); border-radius: 6px; color: white; font-size: clamp(13px, 2.5vw, 14px); width: 100%; }
+        .player-input::placeholder { color: rgba(255,255,255,0.7); }
+        .score-display { font-size: clamp(36px, 10vw, 48px); font-weight: 700; text-align: center; }
+        .card { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: clamp(15px, 4vw, 30px); margin-bottom: clamp(15px, 3vw, 20px); }
+        .btn-primary { width: 100%; padding: clamp(14px, 3vw, 16px); background: #10b981; color: white; border: none; border-radius: 8px; font-size: clamp(16px, 3vw, 18px); font-weight: 600; cursor: pointer; min-height: 50px; }
+        .btn-secondary { padding: clamp(10px, 2vw, 12px) clamp(20px, 4vw, 24px); background: #6b7280; color: white; border: none; border-radius: 8px; font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; cursor: pointer; min-height: 44px; }
+        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; min-width: 500px; border-collapse: collapse; border: 2px solid #e5e7eb; }
+        th, td { padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center; font-size: clamp(13px, 2.5vw, 14px); }
+        th { background: #f9fafb; font-weight: 700; color: #374151; }
+        .bid-cell { cursor: pointer; position: relative; min-height: 60px; transition: all 0.2s; }
+        .bid-cell:hover { background: #f3f4f6; }
+        .bid-cell.selected { background: #ede9fe; }
+        .checkmark { position: absolute; top: 4px; right: 4px; font-size: clamp(11px, 2vw, 12px); color: #667eea; }
+        .tricks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 8px; margin-bottom: clamp(15px, 3vw, 20px); }
+        .trick-btn { padding: clamp(10px, 2vw, 12px); border: 2px solid #e5e7eb; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: clamp(14px, 2.5vw, 16px); min-height: 44px; }
+        .trick-btn.selected { border-color: #10b981; background: #d1fae5; }
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: clamp(15px, 4vw, 20px); }
+        .modal-content { background: white; border-radius: 12px; padding: clamp(20px, 5vw, 30px); max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .hidden { display: none; }
+        .game-over { background: #10b981; color: white; padding: clamp(15px, 3vw, 20px); border-radius: 12px; margin-bottom: clamp(15px, 3vw, 20px); text-align: center; }
+        .auto-saved { font-size: clamp(11px, 2vw, 12px); color: #10b981; display: flex; align-items: center; gap: 5px; }
+        .red-suit { color: #ef4444; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: clamp(14px, 2.5vw, 16px); }
+        .checkbox-label { display: flex; align-items: center; font-size: clamp(14px, 2.5vw, 16px); margin-bottom: 10px; }
+        input[type="checkbox"] { margin-right: 8px; width: clamp(18px, 4vw, 22px); height: clamp(18px, 4vw, 22px); }
+        .selected-bid { background: #f3f4f6; padding: clamp(12px, 3vw, 15px); border-radius: 8px; margin-bottom: clamp(15px, 3vw, 20px); text-align: center; }
+        .selected-bid-value { font-size: clamp(20px, 4vw, 24px); font-weight: 700; }
+        .slam-warning { background: #fef3c7; border: 2px solid #f59e0b; padding: clamp(12px, 3vw, 15px); border-radius: 8px; margin-bottom: clamp(15px, 3vw, 20px); }
+        .tip-box { background: #f5f5f5; border: 2px solid #1a1a1a; border-radius: 8px; padding: 12px; margin-bottom: clamp(15px, 3vw, 20px); font-size: clamp(13px, 2.5vw, 14px); color: #1a1a1a; }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #10b981;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* ===== MOBILE OPTIMIZATIONS ===== */
+        
+        /* #6 - Fix iOS zoom on input focus by ensuring 16px minimum */
+        @media (max-width: 480px) {
+            .player-input {
+                font-size: 16px !important; /* Override clamp to prevent iOS zoom */
+            }
+            
+            input[type="text"], input[type="number"] {
+                font-size: 16px !important; /* Prevent zoom on all inputs */
+            }
+        }
+        
+        /* #3 - Allow current bidder text to wrap on mobile */
+        @media (max-width: 480px) {
+            #currentBidderBox {
+                white-space: normal !important;
+            }
+        }
+        
+        /* #5 - Increase touch targets for navigation buttons on mobile */
+        @media (max-width: 480px) {
+            button {
+                min-height: 44px; /* iOS minimum recommended touch target */
+            }
+        }
+        
+        /* #1 - Increase bidding table touch targets for mobile */
+        .bidding-table-cell {
+            min-height: 44px;
+        }
+        
+        @media (max-width: 480px) {
+            .bidding-table-cell {
+                padding: 14px 8px !important;
+                min-height: 48px;
+            }
+        }
+        
+        /* #2 - Better handling for very small screens */
+        @media (max-width: 400px) {
+            .table-container table {
+                min-width: 320px; /* Reduce from 400px for small phones */
+            }
+        }
+        
+        /* #4 - Add scroll indicator for bid history */
+        #bidHistoryInlineBox {
+            position: relative;
+        }
+        
+        #bidHistoryInlineBox::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(to right, transparent, #f0f9ff);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        #bidHistoryInlineBox.has-scroll::after {
+            opacity: 1;
+        }
+        
+        /* #7 - Modal improvements for mobile */
+        .modal-content {
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        @media (max-width: 480px) {
+            .modal {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            
+            .modal-content {
+                max-height: calc(100vh - 40px);
+                overflow-y: auto;
+            }
+        }
+        
+        /* Additional mobile table improvements */
+        @media (max-width: 480px) {
+            .table-container {
+                position: relative;
+            }
+            
+            /* Add scroll shadow indicator on right */
+            .table-container::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 20px;
+                background: linear-gradient(to right, transparent, rgba(0,0,0,0.1));
+                pointer-events: none;
+            }
+        }
+        
+        /* Improve touch targets for tricks grid */
+        @media (max-width: 480px) {
+            .trick-btn {
+                min-height: 48px;
+                font-size: 16px;
+            }
+        }
+        
+        /* Make Pass/Misere buttons more touch-friendly on mobile */
+        @media (max-width: 480px) {
+            #passBtn, #misereBtn, #openMisereBtn {
+                min-height: 50px;
+                font-size: 16px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" style="width: clamp(280px, 60vw, 400px); height: auto; display: block; margin: 0 auto;">
+              <g transform="translate(50, 60)">
+                <g transform="rotate(45 28 28)">
+                  <rect x="0" y="0" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="20" y="0" width="16" height="16" fill="#00d4aa" rx="1"/>
+                  <rect x="40" y="0" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="0" y="20" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="20" y="20" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="40" y="20" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="0" y="40" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="20" y="40" width="16" height="16" fill="#1a1a1a" rx="1"/>
+                  <rect x="40" y="40" width="16" height="16" fill="#00d4aa" rx="1"/>
+                </g>
+              </g>
+              <text x="130" y="70" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#1a1a1a">Hillfred</text>
+              <rect x="130" y="76" width="80" height="1" fill="#00d4aa"/>
+            </svg>
+            <h2 style="margin: 15px 0 0 0; font-size: clamp(18px, 4vw, 24px); color: #1a1a1a; font-weight: 600; text-align: center;">500 Scorer</h2>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; justify-content: flex-start; align-items: center;">
+            <button id="newGameBtn" onclick="newGame()" style="padding: 10px 16px; background: #ef4444; color: white; border: 2px solid #ef4444; border-radius: 8px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                New Game
+            </button>
+            <button id="recentBidsBtn" onclick="showView('recentBids')" style="padding: 10px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                Recent Bids
+            </button>
+            <button id="playerStatsBtn" onclick="showView('playerStats')" style="padding: 10px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                Player Stats
+            </button>
+        </div>
+
+        <!-- Current Bidder and Bid History Display -->
+        <div id="biddingInfoContainer" style="display: none; margin-bottom: 15px; padding: 12px; background: #fafafa; border-radius: 8px; border: 2px solid #e5e7eb;">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                <!-- Current Bidder Display -->
+                <div id="currentBidderBox" style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 8px; padding: 8px 14px; white-space: nowrap;">
+                    <span style="font-size: clamp(12px, 2.5vw, 13px); color: #92400e; margin-right: 8px; font-weight: 600;">👉 Current Bidder:</span>
+                    <span id="currentBidderDisplay" style="font-size: clamp(13px, 2.5vw, 14px); font-weight: 700;"></span>
+                </div>
+                
+                <!-- Bid History Display -->
+                <div id="bidHistoryInlineBox" style="background: #f0f9ff; border: 2px solid #3b82f6; border-radius: 8px; padding: 8px 14px; flex: 1; overflow-x: auto;">
+                    <span style="font-size: clamp(12px, 2.5vw, 13px); color: #1e40af; font-weight: 600; margin-right: 8px;">📊 Bids:</span>
+                    <span id="bidHistoryInlineList" style="font-size: clamp(12px, 2.5vw, 13px); font-weight: 600;"></span>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameTab">
+            <!-- Team 1 Row: Player 1 + Player 3 + Team 1 Score -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <!-- Player 1 - Black (Team 1) -->
+                <div id="player1Box" style="background: #1a1a1a; padding: 10px; border-radius: 8px; color: white; border: 4px solid transparent; transition: all 0.3s;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <input type="radio" name="dealer" value="team1Player1" onchange="selectDealer('team1Player1')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #fff;">
+                        <input type="text" class="player-input" id="team1Player1" placeholder="Player 1" style="flex: 1; background: rgba(255,255,255,0.2); border: none; padding: 8px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600;">
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 12px; min-height: 20px;">
+                        <span id="dealer1Icon" style="font-size: 18px; display: none;">🎴</span>
+                        <span id="bidder1Icon" style="font-size: 16px; display: none;">👉</span>
+                    </div>
+                </div>
+                
+                <!-- Player 3 - Black (Team 1) -->
+                <div id="player3Box" style="background: #1a1a1a; padding: 10px; border-radius: 8px; color: white; border: 4px solid transparent; transition: all 0.3s;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <input type="radio" name="dealer" value="team1Player2" onchange="selectDealer('team1Player2')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #fff;">
+                        <input type="text" class="player-input" id="team1Player2" placeholder="Player 3" style="flex: 1; background: rgba(255,255,255,0.2); border: none; padding: 8px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600;">
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 12px; min-height: 20px;">
+                        <span id="dealer3Icon" style="font-size: 18px; display: none;">🎴</span>
+                        <span id="bidder3Icon" style="font-size: 16px; display: none;">👉</span>
+                    </div>
+                </div>
+                
+                <!-- Team 1 Score -->
+                <div style="background: #1a1a1a; padding: 15px; border-radius: 8px; text-align: center; color: white;">
+                    <input type="text" class="team-input" id="team1Name" value="Team 1" style="background: rgba(255,255,255,0.2); border: none; padding: 6px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; width: 100%; text-align: center; margin-bottom: 8px; box-sizing: border-box;">
+                    <div style="font-size: clamp(28px, 6vw, 36px); font-weight: 700;" id="team1Score">0</div>
+                </div>
+            </div>
+            
+            <!-- Team 2 Row: Player 2 + Player 4 + Team 2 Score -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <!-- Player 2 - Teal (Team 2) -->
+                <div id="player2Box" style="background: #00d4aa; padding: 10px; border-radius: 8px; color: white; border: 4px solid transparent; transition: all 0.3s;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <input type="radio" name="dealer" value="team2Player1" onchange="selectDealer('team2Player1')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #fff;">
+                        <input type="text" class="player-input" id="team2Player1" placeholder="Player 2" style="flex: 1; background: rgba(255,255,255,0.2); border: none; padding: 8px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600;">
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 12px; min-height: 20px;">
+                        <span id="dealer2Icon" style="font-size: 18px; display: none;">🎴</span>
+                        <span id="bidder2Icon" style="font-size: 16px; display: none;">👉</span>
+                    </div>
+                </div>
+                
+                <!-- Player 4 - Teal (Team 2) -->
+                <div id="player4Box" style="background: #00d4aa; padding: 10px; border-radius: 8px; color: white; border: 4px solid transparent; transition: all 0.3s;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <input type="radio" name="dealer" value="team2Player2" onchange="selectDealer('team2Player2')" style="width: 16px; height: 16px; cursor: pointer; accent-color: #fff;">
+                        <input type="text" class="player-input" id="team2Player2" placeholder="Player 4" style="flex: 1; background: rgba(255,255,255,0.2); border: none; padding: 8px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600;">
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 12px; min-height: 20px;">
+                        <span id="dealer4Icon" style="font-size: 18px; display: none;">🎴</span>
+                        <span id="bidder4Icon" style="font-size: 16px; display: none;">👉</span>
+                    </div>
+                </div>
+                
+                <!-- Team 2 Score -->
+                <div style="background: #00d4aa; padding: 15px; border-radius: 8px; text-align: center; color: white;">
+                    <input type="text" class="team-input" id="team2Name" value="Team 2" style="background: rgba(255,255,255,0.2); border: none; padding: 6px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; width: 100%; text-align: center; margin-bottom: 8px; box-sizing: border-box;">
+                    <div style="font-size: clamp(28px, 6vw, 36px); font-weight: 700;" id="team2Score">0</div>
+                </div>
+            </div>
+
+            <div class="card" style="padding: clamp(15px, 3vw, 20px);">
+                <h3 style="margin: 0 0 15px 0; font-size: clamp(16px, 3vw, 18px); color: #374151;">🎯 Bidding Phase</h3>
+                
+                <div id="biddingPhaseSection">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: clamp(14px, 2.5vw, 16px);">Or select a bid:</label>
+                        <div style="display: flex; gap: 15px; align-items: flex-start;">
+                            <div class="table-container" style="flex: 1;">
+                                <table style="width: 100%; min-width: 400px; border-collapse: collapse; border: 2px solid #e5e7eb;">
+                                    <thead>
+                                        <tr style="background: #f9fafb;">
+                                            <th style="padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center;">♠</th>
+                                            <th style="padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center;">♣</th>
+                                            <th style="padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center; color: #ef4444;">♦</th>
+                                            <th style="padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center; color: #ef4444;">♥</th>
+                                            <th style="padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center;">NT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="biddingTableBody"></tbody>
+                                </table>
+                            </div>
+                            <div id="misereBoxes" style="display: flex; flex-direction: column; gap: 0; min-width: 120px; height: 100%;">
+                                <button onclick="selectBid('Pass')" class="btn-secondary" id="passBtn" style="padding: 20px 10px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 6px 6px 0 0; font-size: clamp(15px, 3vw, 17px); font-weight: 700; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    Pass
+                                </button>
+                                <button id="misereBtn" onclick="selectBid('Misère')" style="flex: 1; padding: 12px 10px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-top: 1px solid #fbbf24; border-radius: 0; font-size: clamp(13px, 2.5vw, 14px); font-weight: 700; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    <div>Misère</div>
+                                    <div style="font-size: clamp(11px, 2vw, 12px); font-weight: 500; margin-top: 4px;">(250)</div>
+                                </button>
+                                <button id="openMisereBtn" onclick="selectBid('Open Misère')" style="flex: 1; padding: 12px 10px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-top: 1px solid #fbbf24; border-radius: 0 0 6px 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 700; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    <div>Open Misère</div>
+                                    <div style="font-size: clamp(11px, 2vw, 12px); font-weight: 500; margin-top: 4px;">(500)</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="biddingCompleteSection" style="display: none;">
+                    <div style="font-size: clamp(13px, 2.5vw, 14px); color: #6b7280;">
+                        <strong>Final Bid:</strong> <span id="finalBidDisplay"></span>
+                        <button onclick="reopenBidding()" style="margin-left: 10px; padding: 4px 12px; background: #fee2e2; color: #991b1b; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                            Reopen Bidding
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip-box" id="tipBox" style="display: none;">
+                <strong>💡 Tip:</strong> Click on a team box to select the contractor team, then click the radio button next to the player who made the bid.
+            </div>
+
+            <div id="bidderWarning" class="slam-warning" style="display: none; background: #fef3c7;">
+                <strong>⚠️ Please select a bidder:</strong> Click the radio button next to the player who made the bid.
+            </div>
+
+            <div id="gameOverMessage" class="game-over hidden">
+                <h2 style="margin: 0 0 10px 0; font-size: clamp(20px, 4vw, 24px);">🏆 Game Over!</h2>
+                <p style="font-size: clamp(18px, 3.5vw, 24px); margin: 0;" id="winnerText"></p>
+            </div>
+
+            <div id="trickSelectionSection" class="card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: clamp(15px, 3vw, 20px); flex-wrap: wrap; gap: 10px;">
+                    <h2 style="margin: 0; color: #1f2937; font-size: clamp(20px, 4vw, 24px);">Hand #<span id="currentHand">1</span></h2>
+                    <div class="auto-saved hidden" id="autoSaved">
+                        <span style="font-size: clamp(14px, 3vw, 16px);">✓</span>
+                        <span>Auto-saved</span>
+                    </div>
+                </div>
+
+                <label>Tricks Actually Won:</label>
+                <div class="tricks-grid" id="tricksGrid"></div>
+
+                <div id="slamWarning" class="slam-warning hidden">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="isSlam" checked>
+                        <span>This is a Slam! (Minimum 250 points)</span>
+                    </label>
+                </div>
+
+                <button class="btn-primary" onclick="recordHand()">Record Hand</button>
+            </div>
+
+            <div id="handHistory" class="card hidden">
+                <h3 style="margin-top: 0; font-size: clamp(18px, 3vw, 20px);">Hand History</h3>
+                <div class="table-container">
+                    <table id="historyTable"></table>
+                </div>
+            </div>
+        </div>
+
+        <div id="recentBidsTab" class="hidden">
+            <button onclick="showView('game')" style="padding: 8px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; margin-bottom: 15px;">
+                ← Back to Game
+            </button>
+            <h2 style="margin-top: 0; font-size: clamp(20px, 4vw, 24px);">📋 Recent Bids</h2>
+            <div id="recentBidsBox" style="padding: 0;">
+                <div id="recentBidsList"></div>
+            </div>
+        </div>
+
+        <div id="playerStatsTab" class="hidden">
+            <button onclick="showView('game')" style="padding: 8px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; margin-bottom: 15px;">
+                ← Back to Game
+            </button>
+            <h2 style="margin-top: 0; font-size: clamp(20px, 4vw, 24px);">👥 Player Statistics (All-Time)</h2>
+            <div id="playerStatsBox" style="padding: 0; margin-top: 15px;">
+                <div id="playerStatsList"></div>
+            </div>
+        </div>
+
+        <div id="historyTab" class="hidden">
+            <button onclick="showView('game')" style="padding: 8px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; margin-bottom: 15px;">
+                ← Back to Game
+            </button>
+            <h2 style="margin-top: 0; font-size: clamp(20px, 4vw, 24px);">Game History</h2>
+            <div id="historyList"></div>
+        </div>
+
+        <div id="statsTab" class="hidden">
+            <button onclick="showView('game')" style="padding: 8px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; margin-bottom: 15px;">
+                ← Back to Game
+            </button>
+            <h2 style="margin-top: 0; font-size: clamp(20px, 4vw, 24px);">Statistics</h2>
+            <div id="statisticsContent"></div>
+        </div>
+    </div>
+
+    <div id="recoveryModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="margin-top: 0; color: #1f2937; font-size: clamp(18px, 4vw, 22px);">🔄 Game in Progress Found</h2>
+            <p style="color: #6b7280; margin-bottom: 20px; font-size: clamp(14px, 2.5vw, 16px);">
+                We found an incomplete game. Would you like to continue?
+            </p>
+            <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: clamp(13px, 2.5vw, 14px);" id="recoveryDetails"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn-primary" onclick="recoverGame()">Resume Game</button>
+                <button class="btn-secondary" onclick="discardRecovery()">Start Fresh</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Game Settings Modal -->
+    <div id="newGameSettingsModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 style="margin-top: 0; color: #1f2937; font-size: clamp(18px, 4vw, 22px);">🎮 New Game Settings</h2>
+            <p style="color: #6b7280; margin-bottom: 20px; font-size: clamp(14px, 2.5vw, 16px);">
+                Configure your game settings before starting
+            </p>
+            
+            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div>
+                        <div style="font-weight: 600; color: #1f2937; font-size: clamp(14px, 2.5vw, 16px); margin-bottom: 4px;">
+                            Misère Bids
+                        </div>
+                        <div style="color: #6b7280; font-size: clamp(12px, 2vw, 13px);">
+                            Enable Misère and Open Misère bidding options
+                        </div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="misereToggle" checked onchange="toggleMisere()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                <button class="btn-primary" onclick="startNewGameWithSettings()">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCORING_TABLE = {
+            6: { SPADES: 40, CLUBS: 60, DIAMONDS: 80, HEARTS: 100, NOTRUMPS: 120, MISERE: 250 },
+            7: { SPADES: 140, CLUBS: 160, DIAMONDS: 180, HEARTS: 200, NOTRUMPS: 220 },
+            8: { SPADES: 240, CLUBS: 260, DIAMONDS: 280, HEARTS: 300, NOTRUMPS: 320 },
+            9: { SPADES: 340, CLUBS: 360, DIAMONDS: 380, HEARTS: 400, NOTRUMPS: 420 },
+            10: { SPADES: 440, CLUBS: 460, DIAMONDS: 480, HEARTS: 500, NOTRUMPS: 520 }
+        };
+
+        function getBidValue(tricks, suit) {
+            return SCORING_TABLE[tricks]?.[suit] || 0;
+        }
+
+        function parseBidString(bidStr) {
+            if (bidStr === 'Pass') return { type: 'pass', value: 0 };
+            if (bidStr === 'Misère') return { type: 'misere', value: 250 };
+            if (bidStr === 'Open Misère') return { type: 'openmisere', value: 500 };
+            
+            const match = bidStr.match(/(\d+)(♠|♣|♦|♥|NT)/);
+            if (match) {
+                const tricks = parseInt(match[1]);
+                const suitMap = {'♠': 'SPADES', '♣': 'CLUBS', '♦': 'DIAMONDS', '♥': 'HEARTS', 'NT': 'NOTRUMPS'};
+                const suit = suitMap[match[2]];
+                return { type: 'normal', tricks: tricks, suit: suit, value: getBidValue(tricks, suit) };
+            }
+            return { type: 'unknown', value: 0 };
+        }
+
+        function isValidBid(newBidStr) {
+            if (newBidStr === 'Pass') return true; // Can always pass
+            
+            // Check if Misère bids are disabled
+            if (!gameState.misereEnabled && (newBidStr === 'Misère' || newBidStr === 'Open Misère')) {
+                return false;
+            }
+            
+            // Misère can only be bid AFTER someone has bid 7 of something
+            if (newBidStr === 'Misère') {
+                const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+                if (!lastNonPass) return false; // Cannot bid Misère as first bid
+                
+                // Check if any 7-trick bid has been made
+                const has7TrickBid = gameState.biddingSequence.some(b => {
+                    if (b.bid === 'Pass' || b.bid === 'Misère' || b.bid === 'Open Misère') return false;
+                    const match = b.bid.match(/^(\d+)/);
+                    return match && parseInt(match[1]) >= 7;
+                });
+                
+                if (!has7TrickBid) return false;
+                
+                // Must be higher than current bid
+                const currentBid = parseBidString(lastNonPass.bid);
+                const newBid = parseBidString(newBidStr);
+                return newBid.value > currentBid.value;
+            }
+            
+            // Open Misère can only be bid AFTER someone has bid 7 or higher
+            if (newBidStr === 'Open Misère') {
+                const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+                if (!lastNonPass) return false; // Cannot bid Open Misère as first bid
+                
+                // Check if any 7-or-higher trick bid has been made
+                const has7OrHigherBid = gameState.biddingSequence.some(b => {
+                    if (b.bid === 'Pass' || b.bid === 'Misère' || b.bid === 'Open Misère') return false;
+                    const match = b.bid.match(/^(\d+)/);
+                    return match && parseInt(match[1]) >= 7;
+                });
+                
+                if (!has7OrHigherBid) return false;
+                
+                // Must be higher than current bid
+                const currentBid = parseBidString(lastNonPass.bid);
+                const newBid = parseBidString(newBidStr);
+                return newBid.value > currentBid.value;
+            }
+            
+            // Find the current high bid
+            const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+            if (!lastNonPass) return true; // First bid, always valid
+            
+            const currentBid = parseBidString(lastNonPass.bid);
+            const newBid = parseBidString(newBidStr);
+            
+            // New bid must be higher in value
+            return newBid.value > currentBid.value;
+        }
+
+        let gameState = {
+            team1Name: 'Team 1', team2Name: 'Team 2',
+            team1Player1: '', team1Player2: '', team2Player1: '', team2Player2: '',
+            team1Score: 0, team2Score: 0, currentHand: 1, history: [],
+            contractor: 'team1', bidder: null,
+            bidTricks: 6, bidSuit: 'SPADES', actualTricks: 0,
+            isSlam: false, isMisere: false, isOpenMisere: false,
+            biddingPhase: true,
+            biddingSequence: [],
+            currentBidder: 'team1Player1',
+            passedPlayers: [],
+            dealer: 'team1Player1',
+            misereEnabled: true
+        };
+
+        function rotateDealer() {
+            const order = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            const currentIndex = order.indexOf(gameState.dealer);
+            const nextDealer = order[(currentIndex + 1) % 4];
+            gameState.dealer = nextDealer;
+            return nextDealer;
+        }
+
+        function selectDealer(dealer) {
+            gameState.dealer = dealer;
+            const order = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            const dealerIndex = order.indexOf(dealer);
+            gameState.currentBidder = order[(dealerIndex + 1) % 4];
+            updateDealerDisplay();
+        }
+
+        function getPlayerToLeftOfDealer() {
+            const order = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            const dealerIndex = order.indexOf(gameState.dealer);
+            return order[(dealerIndex + 1) % 4];
+        }
+
+        function updatePlayerBoxHighlighting() {
+            const players = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            const boxes = ['player1Box', 'player2Box', 'player3Box', 'player4Box'];
+            const bidderIcons = ['bidder1Icon', 'bidder2Icon', 'bidder3Icon', 'bidder4Icon'];
+            
+            players.forEach((player, index) => {
+                const box = document.getElementById(boxes[index]);
+                const icon = document.getElementById(bidderIcons[index]);
+                const isCurrentBidder = gameState.currentBidder === player;
+                
+                if (box) {
+                    if (isCurrentBidder) {
+                        box.style.border = '4px solid #fbbf24';
+                        box.style.boxShadow = '0 0 0 2px #fde047';
+                    } else {
+                        box.style.border = '4px solid transparent';
+                        box.style.boxShadow = 'none';
+                    }
+                }
+                
+                if (icon) {
+                    icon.style.display = isCurrentBidder ? 'inline' : 'none';
+                }
+            });
+        }
+
+        function updateDealerDisplay() {
+            // Update all player labels and dealer icons
+            // Order matches the HTML: Player1, Player2, Player3, Player4
+            const players = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            const icons = ['dealer1Icon', 'dealer2Icon', 'dealer3Icon', 'dealer4Icon'];
+            
+            players.forEach((player, index) => {
+                const icon = document.getElementById(icons[index]);
+                const isDealer = gameState.dealer === player;
+                
+                if (icon) icon.style.display = isDealer ? 'inline' : 'none';
+            });
+            
+            // Update radio button checked state
+            document.querySelectorAll('input[name="dealer"]').forEach(radio => {
+                radio.checked = (radio.value === gameState.dealer);
+            });
+        }
+
+        function getNextBidder(current, skipPassed = true) {
+            const order = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            let currentIndex = order.indexOf(current);
+            let nextIndex = (currentIndex + 1) % 4;
+            let attempts = 0;
+            
+            // Skip passed players
+            while (skipPassed && gameState.passedPlayers.includes(order[nextIndex]) && attempts < 4) {
+                nextIndex = (nextIndex + 1) % 4;
+                attempts++;
+            }
+            
+            return order[nextIndex];
+        }
+
+        function getPlayerName(player) {
+            if (player === 'team1Player1') return gameState.team1Player1 || document.getElementById('team1Player1').value || 'Team 1 Player 1';
+            if (player === 'team1Player2') return gameState.team1Player2 || document.getElementById('team1Player2').value || 'Team 1 Player 2';
+            if (player === 'team2Player1') return gameState.team2Player1 || document.getElementById('team2Player1').value || 'Team 2 Player 1';
+            return gameState.team2Player2 || document.getElementById('team2Player2').value || 'Team 2 Player 2';
+        }
+
+        function selectBid(bidStr, tricks = null, suit = null) {
+            try {
+                // Check if player has already passed
+                if (gameState.passedPlayers.includes(gameState.currentBidder)) {
+                    alert('You have already passed and cannot bid again this hand.');
+                    return;
+                }
+                
+                // Check if player is trying to outbid themselves (not allowed)
+                if (bidStr !== 'Pass') {
+                    const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+                    if (lastNonPass && lastNonPass.player === gameState.currentBidder) {
+                        alert('You cannot improve your own bid. You must wait for another player to bid higher, or pass to end the bidding.');
+                        return;
+                    }
+                }
+                
+                // Validate the bid (unless it's a pass)
+                if (bidStr !== 'Pass' && !isValidBid(bidStr)) {
+                    const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+                    alert('Invalid bid! You must bid higher than the current bid of ' + lastNonPass.bid + ' or pass.');
+                    return;
+                }
+                
+                // Immediately confirm the bid
+                const playerName = getPlayerName(gameState.currentBidder);
+            
+            gameState.biddingSequence.push({ 
+                player: gameState.currentBidder, 
+                playerName: playerName, 
+                bid: bidStr 
+            });
+            
+            // Track passed players
+            if (bidStr === 'Pass') {
+                gameState.passedPlayers.push(gameState.currentBidder);
+            }
+            
+            // Check if bidding should auto-complete
+            const lastThreeBids = gameState.biddingSequence.slice(-3);
+            const threeConsecutivePasses = lastThreeBids.length === 3 && lastThreeBids.every(b => b.bid === 'Pass');
+            const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+            const allFourPlayersPassed = gameState.passedPlayers.length === 4;
+            
+            // When 3 consecutive passes occur after a bid, end bidding immediately
+            if (threeConsecutivePasses && lastNonPass) {
+                gameState.bidder = lastNonPass.player;
+                gameState.contractor = lastNonPass.player.startsWith('team1') ? 'team1' : 'team2';
+                gameState.biddingPhase = false;
+                
+                // Set bid details
+                if (lastNonPass.bid === 'Misère') {
+                    gameState.isMisere = true;
+                    gameState.isOpenMisere = false;
+                } else if (lastNonPass.bid === 'Open Misère') {
+                    gameState.isOpenMisere = true;
+                    gameState.isMisere = false;
+                } else {
+                    const bidMatch = lastNonPass.bid.match(/^(\d+)(.+)$/);
+                    if (bidMatch) {
+                        gameState.bidTricks = parseInt(bidMatch[1]);
+                        const suitSymbol = bidMatch[2];
+                        gameState.bidSuit = suitSymbol === '♠' ? 'SPADES' :
+                                           suitSymbol === '♣' ? 'CLUBS' :
+                                           suitSymbol === '♦' ? 'DIAMONDS' :
+                                           suitSymbol === '♥' ? 'HEARTS' : 'NOTRUMPS';
+                    }
+                    gameState.isMisere = false;
+                    gameState.isOpenMisere = false;
+                }
+                
+                updateDisplay();
+                saveGame();
+                return;
+            }
+            
+            // If all four players passed without any bids
+            if (allFourPlayersPassed && !lastNonPass) {
+                // All players passed - rotate dealer and start fresh
+                alert('All players passed. Deal moves to next player.');
+                const newDealer = rotateDealer();
+                gameState.biddingSequence = [];
+                gameState.passedPlayers = [];
+                gameState.currentBidder = getPlayerToLeftOfDealer();
+                updateDealerDisplay();
+                updateBiddingDisplay();
+                createBiddingPhaseTable();
+                saveGame();
+                return;
+            }
+            
+            // Move to next bidder (skip passed players)
+            gameState.currentBidder = getNextBidder(gameState.currentBidder, true);
+            
+            // If there's a bid and 3 players have passed, end bidding automatically
+            if (lastNonPass && gameState.passedPlayers.length === 3) {
+                gameState.bidder = lastNonPass.player;
+                gameState.contractor = lastNonPass.player.startsWith('team1') ? 'team1' : 'team2';
+                gameState.biddingPhase = false;
+                
+                // Set bid details
+                if (lastNonPass.bid === 'Misère') {
+                    gameState.isMisere = true;
+                    gameState.isOpenMisere = false;
+                } else if (lastNonPass.bid === 'Open Misère') {
+                    gameState.isOpenMisere = true;
+                    gameState.isMisere = false;
+                } else {
+                    const bidMatch = lastNonPass.bid.match(/^(\d+)(.+)$/);
+                    if (bidMatch) {
+                        gameState.bidTricks = parseInt(bidMatch[1]);
+                        const suitSymbol = bidMatch[2];
+                        gameState.bidSuit = suitSymbol === '♠' ? 'SPADES' :
+                                           suitSymbol === '♣' ? 'CLUBS' :
+                                           suitSymbol === '♦' ? 'DIAMONDS' :
+                                           suitSymbol === '♥' ? 'HEARTS' : 'NOTRUMPS';
+                    }
+                    gameState.isMisere = false;
+                    gameState.isOpenMisere = false;
+                }
+                
+                updateDisplay();
+                saveGame();
+                return;
+            }
+            
+            // Check if next bidder is the winning bidder (can't outbid themselves)
+            // If so, and there have been 2+ passes, auto-end bidding
+            if (lastNonPass && gameState.currentBidder === lastNonPass.player) {
+                const lastTwoBids = gameState.biddingSequence.slice(-2);
+                const twoConsecutivePasses = lastTwoBids.length === 2 && lastTwoBids.every(b => b.bid === 'Pass');
+                
+                if (twoConsecutivePasses) {
+                    // Auto-end bidding since the winning bidder can't bid again
+                    gameState.bidder = lastNonPass.player;
+                    gameState.contractor = lastNonPass.player.startsWith('team1') ? 'team1' : 'team2';
+                    gameState.biddingPhase = false;
+                    
+                    // Set bid details
+                    if (lastNonPass.bid === 'Misère') {
+                        gameState.isMisere = true;
+                        gameState.isOpenMisere = false;
+                    } else if (lastNonPass.bid === 'Open Misère') {
+                        gameState.isOpenMisere = true;
+                        gameState.isMisere = false;
+                    } else {
+                        const bidMatch = lastNonPass.bid.match(/^(\d+)(.+)$/);
+                        if (bidMatch) {
+                            gameState.bidTricks = parseInt(bidMatch[1]);
+                            const suitSymbol = bidMatch[2];
+                            gameState.bidSuit = suitSymbol === '♠' ? 'SPADES' :
+                                               suitSymbol === '♣' ? 'CLUBS' :
+                                               suitSymbol === '♦' ? 'DIAMONDS' :
+                                               suitSymbol === '♥' ? 'HEARTS' : 'NOTRUMPS';
+                        }
+                        gameState.isMisere = false;
+                        gameState.isOpenMisere = false;
+                    }
+                    
+                    updateDisplay();
+                    saveGame();
+                    return;
+                }
+            }
+            
+            // If it's not a pass, update the current high bid
+            if (bidStr !== 'Pass') {
+                if (tricks && suit) {
+                    gameState.bidTricks = tricks;
+                    gameState.bidSuit = suit;
+                }
+                if (bidStr === 'Misère') {
+                    gameState.isMisere = true;
+                    gameState.isOpenMisere = false;
+                } else if (bidStr === 'Open Misère') {
+                    gameState.isOpenMisere = true;
+                    gameState.isMisere = false;
+                } else {
+                    gameState.isMisere = false;
+                    gameState.isOpenMisere = false;
+                }
+            }
+            
+            updateBiddingDisplay();
+            createBiddingPhaseTable(); // Refresh table to show valid/invalid bids
+            } catch (error) {
+                alert('Error selecting bid: ' + error.message);
+            }
+        }
+
+        function undoLastBid() {
+            if (gameState.biddingSequence.length > 0) {
+                const lastBid = gameState.biddingSequence[gameState.biddingSequence.length - 1];
+                gameState.biddingSequence.pop();
+                
+                // If the undone bid was a pass, remove player from passedPlayers
+                if (lastBid.bid === 'Pass') {
+                    gameState.passedPlayers = gameState.passedPlayers.filter(p => p !== lastBid.player);
+                }
+                
+                // Move back to previous bidder (without skipping)
+                const order = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+                const currentIndex = order.indexOf(gameState.currentBidder);
+                const prevIndex = (currentIndex - 1 + 4) % 4;
+                gameState.currentBidder = order[prevIndex];
+                
+                // Recalculate winning bid from remaining sequence
+                if (gameState.biddingSequence.length > 0) {
+                    const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+                    if (lastNonPass) {
+                        if (lastNonPass.bid === 'Misère') {
+                            gameState.isMisere = true;
+                            gameState.isOpenMisere = false;
+                        } else if (lastNonPass.bid === 'Open Misère') {
+                            gameState.isOpenMisere = true;
+                            gameState.isMisere = false;
+                        } else {
+                            const match = lastNonPass.bid.match(/(\d+)(♠|♣|♦|♥|NT)/);
+                            if (match) {
+                                gameState.bidTricks = parseInt(match[1]);
+                                const suitMap = {'♠': 'SPADES', '♣': 'CLUBS', '♦': 'DIAMONDS', '♥': 'HEARTS', 'NT': 'NOTRUMPS'};
+                                gameState.bidSuit = suitMap[match[2]];
+                            }
+                            gameState.isMisere = false;
+                            gameState.isOpenMisere = false;
+                        }
+                    }
+                }
+                
+                updateBiddingDisplay();
+                createBiddingPhaseTable(); // Refresh table after undo
+            }
+        }
+
+        function completeBidding() {
+            try {
+                if (gameState.biddingSequence.length === 0) {
+                    alert('Please record at least one bid before finishing.');
+                    return;
+                }
+                
+                // Find the last non-pass bid
+                const winningBid = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+                
+                if (!winningBid) {
+                    alert('All players passed. Please record at least one actual bid.');
+                    return;
+                }
+                
+                // Set the bidder and contractor
+                gameState.bidder = winningBid.player;
+                gameState.contractor = winningBid.player.startsWith('team1') ? 'team1' : 'team2';
+                gameState.biddingPhase = false;
+                
+                updateDisplay();
+            } catch (error) {
+                alert('Error completing bidding: ' + error.message);
+            }
+        }
+
+        function reopenBidding() {
+            gameState.biddingPhase = true;
+            updateDisplay();
+            createBiddingPhaseTable(); // Refresh the table
+        }
+
+        function updateBiddingDisplay() {
+            // Update current bidder display
+            const currentBidderName = getPlayerName(gameState.currentBidder);
+            const currentBidderColor = gameState.currentBidder.startsWith('team1') ? '#1a1a1a' : '#00d4aa';
+            
+            let currentBidderHTML = currentBidderName;
+            
+            // Add current high bid info if exists
+            const lastNonPass = [...gameState.biddingSequence].reverse().find(b => b.bid !== 'Pass');
+            if (lastNonPass) {
+                currentBidderHTML += `
+                    <div style="margin-top: 8px; font-size: clamp(12px, 2.5vw, 13px); color: #6b7280; font-weight: normal;">
+                        Current high bid: <strong style="color: #667eea;">${lastNonPass.bid}</strong> by <strong>${lastNonPass.playerName}</strong>
+                    </div>
+                `;
+            }
+            
+            // Add passed players info if exists
+            if (gameState.passedPlayers.length > 0) {
+                const passedNames = gameState.passedPlayers.map(p => {
+                    return p === 'team1Player1' ? (gameState.team1Player1 || 'T1P1') :
+                           p === 'team1Player2' ? (gameState.team1Player2 || 'T1P2') :
+                           p === 'team2Player1' ? (gameState.team2Player1 || 'T2P1') :
+                           (gameState.team2Player2 || 'T2P2');
+                }).join(', ');
+                currentBidderHTML += `
+                    <div style="margin-top: 8px; font-size: clamp(11px, 2vw, 12px); color: #6b7280; font-weight: normal;">
+                        Passed: ${passedNames}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('currentBidderDisplay').innerHTML = currentBidderHTML;
+            document.getElementById('currentBidderDisplay').style.color = currentBidderColor;
+            
+            // Update inline bid history display
+            const bidHistoryInlineList = document.getElementById('bidHistoryInlineList');
+            if (gameState.biddingSequence.length > 0) {
+                const bids = [...gameState.biddingSequence].reverse().map(entry => {
+                    const teamColor = entry.player.startsWith('team1') ? '#1a1a1a' : '#00d4aa';
+                    const bidColor = entry.bid === 'Pass' ? '#6b7280' : 
+                                    (entry.bid.includes('♦') || entry.bid.includes('♥')) ? '#ef4444' : '#667eea';
+                    return `<span style="color: ${teamColor};">${entry.playerName}</span>: <span style="color: ${bidColor}; font-weight: 700;">${entry.bid}</span>`;
+                }).join(' | ');
+                bidHistoryInlineList.innerHTML = bids;
+            } else {
+                bidHistoryInlineList.innerHTML = '<span style="color: #6b7280;">No bids yet</span>';
+            }
+            
+            // Add scroll indicator if content overflows
+            setTimeout(() => {
+                const bidHistoryBox = document.getElementById('bidHistoryInlineBox');
+                if (bidHistoryBox) {
+                    if (bidHistoryBox.scrollWidth > bidHistoryBox.clientWidth) {
+                        bidHistoryBox.classList.add('has-scroll');
+                    } else {
+                        bidHistoryBox.classList.remove('has-scroll');
+                    }
+                }
+            }, 100);
+            
+            // Update player box highlighting
+            updatePlayerBoxHighlighting();
+        }
+
+        function createBiddingPhaseTable() {
+            let html = '';
+            for (let tricks = 6; tricks <= 10; tricks++) {
+                html += '<tr>';
+                
+                const suits = [
+                    { icon: '♠', name: 'SPADES', color: '#374151' },
+                    { icon: '♣', name: 'CLUBS', color: '#374151' },
+                    { icon: '♦', name: 'DIAMONDS', color: '#ef4444' },
+                    { icon: '♥', name: 'HEARTS', color: '#ef4444' },
+                    { icon: 'NT', name: 'NOTRUMPS', color: '#374151' }
+                ];
+                
+                suits.forEach((suit, index) => {
+                    // Regular suit bid
+                    const bidStr = `${tricks}${suit.icon}`;
+                    const scoreValue = SCORING_TABLE[tricks][suit.name];
+                    const isValid = isValidBid(bidStr);
+                    const bgColor = isValid ? 'white' : '#f3f4f6';
+                    const textColor = isValid ? suit.color : '#d1d5db';
+                    const cursor = isValid ? 'pointer' : 'not-allowed';
+                    const opacity = isValid ? '1' : '0.5';
+                    
+                    html += `
+                        <td class="bidding-table-cell" onclick="${isValid ? `selectBid('${bidStr}', ${tricks}, '${suit.name}')` : ''}" 
+                            style="padding: clamp(14px, 3vw, 16px); border: 1px solid #e5e7eb; text-align: center; cursor: ${cursor}; background: ${bgColor}; font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: ${textColor}; opacity: ${opacity};"
+                            ${isValid ? `onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'"` : ''}>
+                            ${bidStr}<br><span style="font-size: clamp(11px, 2vw, 12px); font-weight: 500;">(${scoreValue})</span>
+                        </td>
+                    `;
+                });
+                
+                html += '</tr>';
+            }
+            document.getElementById('biddingTableBody').innerHTML = html;
+            
+            // Update Misère buttons
+            updateMisereButtons();
+        }
+
+        function updateMisereButtons() {
+            const misereBoxes = document.getElementById('misereBoxes');
+            const misereBtn = document.getElementById('misereBtn');
+            const openMisereBtn = document.getElementById('openMisereBtn');
+            
+            if (!gameState.misereEnabled) {
+                misereBoxes.style.display = 'none';
+                return;
+            }
+            
+            misereBoxes.style.display = 'flex';
+            
+            // Update Misère button
+            const misereValid = isValidBid('Misère');
+            misereBtn.style.background = misereValid ? '#fef3c7' : '#f3f4f6';
+            misereBtn.style.color = misereValid ? '#92400e' : '#d1d5db';
+            misereBtn.style.cursor = misereValid ? 'pointer' : 'not-allowed';
+            misereBtn.style.opacity = misereValid ? '1' : '0.5';
+            misereBtn.disabled = !misereValid;
+            
+            // Update Open Misère button
+            const openMisereValid = isValidBid('Open Misère');
+            openMisereBtn.style.background = openMisereValid ? '#fef3c7' : '#f3f4f6';
+            openMisereBtn.style.color = openMisereValid ? '#92400e' : '#d1d5db';
+            openMisereBtn.style.cursor = openMisereValid ? 'pointer' : 'not-allowed';
+            openMisereBtn.style.opacity = openMisereValid ? '1' : '0.5';
+            openMisereBtn.disabled = !openMisereValid;
+        }
+
+        function init() {
+            try {
+                checkRecovery();
+                createBiddingPhaseTable();
+                createTricksGrid();
+                updateDealerDisplay();
+                updateMisereButtonsVisibility();
+                updateDisplay();
+                loadStats();
+            } catch (error) {
+                alert('Error initializing app: ' + error.message);
+            }
+        }
+
+        function selectContractor(team) {
+            gameState.contractor = team;
+            updateTeamBoxes();
+        }
+
+        function selectBidder(bidder) {
+            const team = bidder.startsWith('team1') ? 'team1' : 'team2';
+            gameState.contractor = team;
+            gameState.bidder = bidder;
+            updateTeamBoxes();
+        }
+
+        function updateTeamBoxes() {
+            // Team boxes no longer exist in new design - this function is kept for compatibility
+            // The contractor is now shown by highlighting the bidder when bidding completes
+            
+            // Update radio buttons (now dealer buttons)
+            document.querySelectorAll('input[name="dealer"]').forEach(radio => {
+                radio.checked = (radio.value === gameState.dealer);
+            });
+        }
+
+        function checkRecovery() {
+            const saved = localStorage.getItem('currentGame500');
+            if (saved) {
+                const game = JSON.parse(saved);
+                document.getElementById('recoveryDetails').innerHTML = `
+                    <div style="margin-bottom: 8px;"><strong>Teams:</strong> ${game.team1Name} vs ${game.team2Name}</div>
+                    <div style="margin-bottom: 8px;"><strong>Score:</strong> ${game.team1Score} - ${game.team2Score}</div>
+                    <div><strong>Hand:</strong> ${game.currentHand}</div>
+                `;
+                document.getElementById('recoveryModal').classList.remove('hidden');
+            }
+        }
+
+        function recoverGame() {
+            const saved = JSON.parse(localStorage.getItem('currentGame500'));
+            gameState = {...gameState, ...saved};
+            document.getElementById('recoveryModal').classList.add('hidden');
+            updateDisplay();
+        }
+
+        function discardRecovery() {
+            localStorage.removeItem('currentGame500');
+            document.getElementById('recoveryModal').classList.add('hidden');
+        }
+
+        function createTricksGrid() {
+            const grid = document.getElementById('tricksGrid');
+            let html = '';
+            for (let i = 0; i <= 10; i++) {
+                html += `<button class="trick-btn ${gameState.actualTricks === i ? 'selected' : ''}" onclick="selectTricks(${i})">${i}</button>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function selectTricks(num) {
+            gameState.actualTricks = num;
+            createTricksGrid();
+            if (num === 10 && !gameState.isMisere && !gameState.isOpenMisere) {
+                gameState.isSlam = true;
+                document.getElementById('slamWarning').classList.remove('hidden');
+            } else {
+                gameState.isSlam = false;
+                document.getElementById('slamWarning').classList.add('hidden');
+            }
+        }
+
+        function calculateScore() {
+            let contractorPoints = 0;
+            let opponentPoints = 0;
+
+            if (gameState.isOpenMisere) {
+                contractorPoints = gameState.actualTricks === 0 ? 500 : -500;
+            } else if (gameState.isMisere) {
+                contractorPoints = gameState.actualTricks === 0 ? 250 : -250;
+            } else {
+                const bidValue = SCORING_TABLE[gameState.bidTricks][gameState.bidSuit];
+                if (gameState.actualTricks >= gameState.bidTricks) {
+                    contractorPoints = (gameState.isSlam || gameState.actualTricks === 10) ? Math.max(bidValue, 250) : bidValue;
+                } else {
+                    contractorPoints = -bidValue;
+                    opponentPoints = (10 - gameState.actualTricks) * 10;
+                }
+            }
+            return { contractorPoints, opponentPoints };
+        }
+
+        function getBidderName() {
+            const bidder = gameState.bidder;
+            if (bidder === 'team1Player1') return gameState.team1Player1 || document.getElementById('team1Player1').value || 'Player 1';
+            if (bidder === 'team1Player2') return gameState.team1Player2 || document.getElementById('team1Player2').value || 'Player 2';
+            if (bidder === 'team2Player1') return gameState.team2Player1 || document.getElementById('team2Player1').value || 'Player 1';
+            return gameState.team2Player2 || document.getElementById('team2Player2').value || 'Player 2';
+        }
+
+        function recordHand() {
+            if (gameState.biddingPhase) {
+                alert('Please complete the bidding phase before recording the hand.');
+                return;
+            }
+            
+            if (!gameState.bidder) {
+                alert('Please complete bidding to determine the contractor.');
+                return;
+            }
+            
+            const { contractorPoints, opponentPoints } = calculateScore();
+            
+            const hand = {
+                hand: gameState.currentHand,
+                contractor: gameState.contractor,
+                bidder: gameState.bidder,
+                bidderName: getBidderName(),
+                bid: gameState.isMisere ? 'Misère' : gameState.isOpenMisere ? 'Open Misère' : `${gameState.bidTricks} ${gameState.bidSuit}`,
+                actualTricks: gameState.actualTricks,
+                contractorPoints,
+                opponentPoints,
+                team1Score: gameState.contractor === 'team1' ? gameState.team1Score + contractorPoints : gameState.team1Score + opponentPoints,
+                team2Score: gameState.contractor === 'team2' ? gameState.team2Score + contractorPoints : gameState.team2Score + opponentPoints,
+                isSlam: gameState.isSlam,
+                success: contractorPoints > 0
+            };
+
+            gameState.history.push(hand);
+            gameState.team1Score = hand.team1Score;
+            gameState.team2Score = hand.team2Score;
+            gameState.currentHand++;
+
+            const gameEnded = gameState.team1Score >= 500 || gameState.team2Score >= 500 || gameState.team1Score <= -500 || gameState.team2Score <= -500;
+            
+            if (gameEnded) {
+                saveGame();
+                localStorage.removeItem('currentGame500');
+            } else {
+                localStorage.setItem('currentGame500', JSON.stringify(gameState));
+            }
+
+            gameState.bidder = null;
+            gameState.actualTricks = 0;
+            gameState.isSlam = false;
+            gameState.isMisere = false;
+            gameState.isOpenMisere = false;
+            gameState.bidTricks = 6;
+            gameState.bidSuit = 'SPADES';
+            gameState.biddingSequence = [];
+            gameState.biddingPhase = true;
+            gameState.passedPlayers = [];
+            
+            // Rotate dealer and set next bidder
+            const newDealer = rotateDealer();
+            const order = ['team1Player1', 'team2Player1', 'team1Player2', 'team2Player2'];
+            const dealerIndex = order.indexOf(newDealer);
+            gameState.currentBidder = order[(dealerIndex + 1) % 4];
+            
+            updateDealerDisplay();
+            updateDisplay();
+        }
+
+        function saveGame() {
+            const games = JSON.parse(localStorage.getItem('allGames500') || '[]');
+            const winner = gameState.team1Score >= 500 ? gameState.team1Name : 
+                          gameState.team2Score >= 500 ? gameState.team2Name : 
+                          gameState.team1Score <= -500 ? gameState.team2Name : gameState.team1Name;
+            
+            games.unshift({
+                timestamp: Date.now(),
+                date: new Date().toISOString(),
+                team1Name: gameState.team1Name,
+                team2Name: gameState.team2Name,
+                team1Player1: gameState.team1Player1,
+                team1Player2: gameState.team1Player2,
+                team2Player1: gameState.team2Player1,
+                team2Player2: gameState.team2Player2,
+                team1Score: gameState.team1Score,
+                team2Score: gameState.team2Score,
+                winner,
+                hands: gameState.history.length,
+                history: gameState.history
+            });
+            
+            localStorage.setItem('allGames500', JSON.stringify(games));
+        }
+
+        function newGame() {
+            // Show the new game settings modal
+            document.getElementById('misereToggle').checked = true; // Default to enabled
+            document.getElementById('newGameSettingsModal').classList.remove('hidden');
+        }
+
+        function toggleMisere() {
+            // This just updates the toggle state - actual setting is applied when starting game
+        }
+
+        function startNewGameWithSettings() {
+            if (gameState.history.length > 0 && gameState.team1Score < 500 && gameState.team2Score < 500) {
+                saveGame();
+            }
+            localStorage.removeItem('currentGame500');
+            
+            // Get misere setting from toggle
+            const misereEnabled = document.getElementById('misereToggle').checked;
+            
+            gameState = {
+                team1Name: document.getElementById('team1Name').value || 'Team 1',
+                team2Name: document.getElementById('team2Name').value || 'Team 2',
+                team1Player1: '', team1Player2: '', team2Player1: '', team2Player2: '',
+                team1Score: 0, team2Score: 0, currentHand: 1, history: [],
+                contractor: 'team1', bidder: null,
+                bidTricks: 6, bidSuit: 'SPADES', actualTricks: 0,
+                isSlam: false, isMisere: false, isOpenMisere: false,
+                biddingPhase: true,
+                biddingSequence: [],
+                currentBidder: 'team2Player1',
+                passedPlayers: [],
+                dealer: 'team1Player1',
+                misereEnabled: misereEnabled
+            };
+            
+            document.getElementById('team1Player1').value = '';
+            document.getElementById('team1Player2').value = '';
+            document.getElementById('team2Player1').value = '';
+            document.getElementById('team2Player2').value = '';
+            
+            // Hide the modal
+            document.getElementById('newGameSettingsModal').classList.add('hidden');
+            
+            updateDisplay();
+            updateMisereButtonsVisibility();
+        }
+
+        function updateMisereButtonsVisibility() {
+            // Misère buttons are now inline in the bidding table
+            // Visibility is controlled by gameState.misereEnabled in createBiddingPhaseTable()
+        }
+
+        function updateDisplay() {
+            try {
+                gameState.team1Name = document.getElementById('team1Name').value || 'Team 1';
+                gameState.team2Name = document.getElementById('team2Name').value || 'Team 2';
+                gameState.team1Player1 = document.getElementById('team1Player1').value;
+                gameState.team1Player2 = document.getElementById('team1Player2').value;
+                gameState.team2Player1 = document.getElementById('team2Player1').value;
+                gameState.team2Player2 = document.getElementById('team2Player2').value;
+                
+                document.getElementById('team1Score').textContent = gameState.team1Score;
+                document.getElementById('team2Score').textContent = gameState.team2Score;
+                document.getElementById('currentHand').textContent = gameState.currentHand;
+                
+                updateTeamBoxes();
+            
+            // Handle bidding phase visibility
+            if (gameState.biddingPhase) {
+                document.getElementById('biddingPhaseSection').style.display = 'block';
+                document.getElementById('biddingCompleteSection').style.display = 'none';
+                document.getElementById('trickSelectionSection').style.display = 'none';
+                document.getElementById('tipBox').style.display = 'none';
+                document.getElementById('bidderWarning').style.display = 'none';
+                document.getElementById('biddingInfoContainer').style.display = 'block';
+                updateBiddingDisplay();
+                createBiddingPhaseTable();
+            } else {
+                document.getElementById('biddingPhaseSection').style.display = 'none';
+                document.getElementById('biddingCompleteSection').style.display = 'block';
+                document.getElementById('trickSelectionSection').style.display = 'block';
+                document.getElementById('tipBox').style.display = 'none';
+                document.getElementById('biddingInfoContainer').style.display = 'none';
+                
+                // Show final bid info
+                const bidderName = getPlayerName(gameState.bidder);
+                const bidderColor = gameState.bidder && gameState.bidder.startsWith('team1') ? '#1a1a1a' : '#00d4aa';
+                const bidStr = gameState.isMisere ? 'Misère' : 
+                              gameState.isOpenMisere ? 'Open Misère' : 
+                              `${gameState.bidTricks}${gameState.bidSuit === 'SPADES' ? '♠' : gameState.bidSuit === 'CLUBS' ? '♣' : gameState.bidSuit === 'DIAMONDS' ? '♦' : gameState.bidSuit === 'HEARTS' ? '♥' : 'NT'}`;
+                const bidColor = '#667eea';
+                
+                document.getElementById('finalBidDisplay').innerHTML = `
+                    <span style="color: ${bidderColor}; font-weight: 700;">${bidderName}</span>
+                    bid <span style="color: ${bidColor}; font-weight: 700;">${bidStr}</span>
+                `;
+                
+                // Show warning if no bidder (shouldn't happen but just in case)
+                if (!gameState.bidder) {
+                    document.getElementById('bidderWarning').style.display = 'block';
+                } else {
+                    document.getElementById('bidderWarning').style.display = 'none';
+                }
+            }
+            
+            if (gameState.history.length > 0) {
+                document.getElementById('autoSaved').classList.remove('hidden');
+            }
+            
+            createTricksGrid();
+            updateRecentBids();
+            
+            const gameEnded = gameState.team1Score >= 500 || gameState.team2Score >= 500 || gameState.team1Score <= -500 || gameState.team2Score <= -500;
+            if (gameEnded) {
+                const winner = gameState.team1Score >= 500 ? gameState.team1Name : 
+                              gameState.team2Score >= 500 ? gameState.team2Name : 
+                              gameState.team1Score <= -500 ? gameState.team2Name : gameState.team1Name;
+                document.getElementById('winnerText').textContent = winner + ' Wins!';
+                document.getElementById('gameOverMessage').classList.remove('hidden');
+            } else {
+                document.getElementById('gameOverMessage').classList.add('hidden');
+            }
+            
+            if (gameState.history.length > 0) {
+                document.getElementById('handHistory').classList.remove('hidden');
+                updateHistoryTable();
+            } else {
+                document.getElementById('handHistory').classList.add('hidden');
+            }
+            } catch (error) {
+                alert('Error updating display: ' + error.message);
+                console.error('updateDisplay error:', error);
+            }
+        }
+
+        function updateHistoryTable() {
+            const table = document.getElementById('historyTable');
+            let html = `
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Hand</th>
+                        <th style="text-align: left;">Bidder</th>
+                        <th style="text-align: left;">Bid</th>
+                        <th style="text-align: center;">Tricks</th>
+                        <th style="text-align: center;">Result</th>
+                        <th style="text-align: right;">${gameState.team1Name}</th>
+                        <th style="text-align: right;">${gameState.team2Name}</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            gameState.history.forEach(h => {
+                const formattedBid = formatBid(h.bid);
+                const bidColor = getBidColor(h.bid);
+                html += `
+                    <tr>
+                        <td>${h.hand}</td>
+                        <td>${h.bidderName}</td>
+                        <td class="${bidColor}" style="font-weight: 600;">${formattedBid}</td>
+                        <td style="text-align: center;">${h.actualTricks}/10 ${h.isSlam ? '🎯' : ''}</td>
+                        <td style="text-align: center;">${h.success ? '<span style="color: #10b981; font-weight: 600;">✓</span>' : '<span style="color: #ef4444; font-weight: 600;">✗</span>'}</td>
+                        <td style="text-align: right; font-weight: 600; color: ${h.contractor === 'team1' ? (h.contractorPoints > 0 ? '#10b981' : '#ef4444') : (h.opponentPoints > 0 ? '#10b981' : '#6b7280')};">${h.team1Score}</td>
+                        <td style="text-align: right; font-weight: 600; color: ${h.contractor === 'team2' ? (h.contractorPoints > 0 ? '#10b981' : '#ef4444') : (h.opponentPoints > 0 ? '#10b981' : '#6b7280')};">${h.team2Score}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function formatBid(bid) {
+            if (!bid || bid.includes('Misère')) return bid;
+            return bid.replace('SPADES', '♠').replace('CLUBS', '♣').replace('DIAMONDS', '♦').replace('HEARTS', '♥').replace('NOTRUMPS', 'NT');
+        }
+
+        function getBidColor(bid) {
+            if (!bid) return '';
+            return (bid.includes('DIAMONDS') || bid.includes('HEARTS')) ? 'red-suit' : '';
+        }
+
+        function updateRecentBids() {
+            // Recent bids now shown on demand via button, not auto-displayed
+        }
+
+        function showView(tab) {
+            // Hide all tabs
+            document.getElementById('gameTab').classList.add('hidden');
+            document.getElementById('recentBidsTab').classList.add('hidden');
+            document.getElementById('playerStatsTab').classList.add('hidden');
+            document.getElementById('historyTab').classList.add('hidden');
+            document.getElementById('statsTab').classList.add('hidden');
+            
+            // Reset ALL buttons to gray
+            const allButtons = ['recentBidsBtn', 'playerStatsBtn'];
+            allButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.style.background = '#f3f4f6';
+                    btn.style.color = '#374151';
+                    btn.style.borderColor = '#d1d5db';
+                }
+            });
+            
+            // Show appropriate tab and highlight button
+            if (tab === 'game') {
+                document.getElementById('gameTab').classList.remove('hidden');
+            } else if (tab === 'recentBids') {
+                document.getElementById('recentBidsTab').classList.remove('hidden');
+                loadRecentBids();
+                document.getElementById('recentBidsBtn').style.background = '#1a1a1a';
+                document.getElementById('recentBidsBtn').style.color = 'white';
+                document.getElementById('recentBidsBtn').style.borderColor = '#1a1a1a';
+            } else if (tab === 'playerStats') {
+                document.getElementById('playerStatsTab').classList.remove('hidden');
+                loadPlayerStats();
+                document.getElementById('playerStatsBtn').style.background = '#1a1a1a';
+                document.getElementById('playerStatsBtn').style.color = 'white';
+                document.getElementById('playerStatsBtn').style.borderColor = '#1a1a1a';
+            }
+        }
+
+        function loadRecentBids() {
+            const container = document.getElementById('recentBidsList');
+            
+            if (gameState.history.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280; font-size: clamp(16px, 3vw, 18px); text-align: center; padding: clamp(30px, 6vw, 40px);">No hands played yet.</p>';
+                return;
+            }
+            
+            const recentHands = gameState.history.slice(-5).reverse();
+            let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            
+            recentHands.forEach(hand => {
+                const formattedBid = formatBid(hand.bid);
+                const bidColor = (hand.bid && (hand.bid.includes('DIAMONDS') || hand.bid.includes('HEARTS'))) ? '#ef4444' : '#667eea';
+                const teamColor = hand.contractor === 'team1' ? '#1a1a1a' : '#00d4aa';
+                
+                html += `
+                    <div style="background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px; padding: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div style="font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: #6b7280;">Hand ${hand.hand}</div>
+                            <div style="font-size: clamp(16px, 3vw, 18px); font-weight: 700; color: ${bidColor};">${formattedBid}</div>
+                        </div>
+                        <div style="font-size: clamp(13px, 2.5vw, 14px);">
+                            <span style="color: #6b7280;">Bidder:</span> 
+                            <span style="font-weight: 700; color: ${teamColor};">${hand.bidderName}</span>
+                        </div>
+                        <div style="font-size: clamp(13px, 2.5vw, 14px); margin-top: 4px;">
+                            <span style="color: #6b7280;">Result:</span> 
+                            <span style="font-weight: 600; color: ${hand.success ? '#10b981' : '#ef4444'};">${hand.success ? 'Made ✓' : 'Failed ✗'}</span>
+                            <span style="color: #6b7280;"> (${hand.contractorPoints > 0 ? '+' : ''}${hand.contractorPoints} pts)</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function loadHistory() {
+            const games = JSON.parse(localStorage.getItem('allGames500') || '[]');
+            const container = document.getElementById('historyList');
+            
+            if (games.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280; font-size: clamp(16px, 3vw, 18px); text-align: center; padding: clamp(30px, 6vw, 40px);">No completed games yet.</p>';
+                return;
+            }
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: clamp(15px, 3vw, 20px);">';
+            
+            games.forEach((game, index) => {
+                const date = new Date(game.date);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                const isTeam1Winner = game.winner === game.team1Name;
+                
+                html += `
+                    <div style="background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: clamp(15px, 3vw, 20px);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <div style="font-size: clamp(12px, 2.5vw, 14px); color: #6b7280; margin-bottom: 4px;">
+                                    ${formattedDate}
+                                </div>
+                                <div style="font-size: clamp(16px, 3vw, 18px); font-weight: 700; color: #1f2937;">
+                                    Game ${games.length - index}
+                                </div>
+                            </div>
+                            <div style="background: ${isTeam1Winner ? '#1a1a1a' : '#00d4aa'}; color: white; padding: 6px 12px; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600;">
+                                🏆 ${game.winner}
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div style="background: ${isTeam1Winner ? 'rgba(26,26,26,0.1)' : 'white'}; padding: 12px; border-radius: 8px; border: 2px solid ${isTeam1Winner ? '#1a1a1a' : '#e5e7eb'};">
+                                <div style="font-size: clamp(13px, 2.5vw, 14px); color: #6b7280; margin-bottom: 4px;">${game.team1Name}</div>
+                                <div style="font-size: clamp(24px, 5vw, 32px); font-weight: 700; color: #1a1a1a;">${game.team1Score}</div>
+                                <div style="font-size: clamp(11px, 2vw, 12px); color: #9ca3af; margin-top: 4px;">
+                                    ${game.team1Player1}${game.team1Player2 ? ' & ' + game.team1Player2 : ''}
+                                </div>
+                            </div>
+                            
+                            <div style="background: ${!isTeam1Winner ? 'rgba(0,212,170,0.1)' : 'white'}; padding: 12px; border-radius: 8px; border: 2px solid ${!isTeam1Winner ? '#00d4aa' : '#e5e7eb'};">
+                                <div style="font-size: clamp(13px, 2.5vw, 14px); color: #6b7280; margin-bottom: 4px;">${game.team2Name}</div>
+                                <div style="font-size: clamp(24px, 5vw, 32px); font-weight: 700; color: #00d4aa;">${game.team2Score}</div>
+                                <div style="font-size: clamp(11px, 2vw, 12px); color: #9ca3af; margin-top: 4px;">
+                                    ${game.team2Player1}${game.team2Player2 ? ' & ' + game.team2Player2 : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: clamp(12px, 2.5vw, 13px); color: #6b7280; text-align: center;">
+                            ${game.hands} hand${game.hands !== 1 ? 's' : ''} played
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function loadStats() {
+            const games = JSON.parse(localStorage.getItem('allGames500') || '[]');
+            const container = document.getElementById('statisticsContent');
+            
+            if (games.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280; font-size: clamp(16px, 3vw, 18px); text-align: center; padding: clamp(30px, 6vw, 40px);">No statistics available yet. Complete a game to see stats!</p>';
+                return;
+            }
+            
+            // Calculate statistics
+            const stats = {
+                totalGames: games.length,
+                totalHands: games.reduce((sum, g) => sum + g.hands, 0),
+                avgHandsPerGame: 0,
+                highestScore: 0,
+                lowestScore: 0,
+                teams: {}
+            };
+            
+            stats.avgHandsPerGame = Math.round(stats.totalHands / stats.totalGames);
+            
+            // Team-specific stats
+            games.forEach(game => {
+                // Team 1
+                if (!stats.teams[game.team1Name]) {
+                    stats.teams[game.team1Name] = { wins: 0, losses: 0, totalScore: 0, games: 0 };
+                }
+                stats.teams[game.team1Name].games++;
+                stats.teams[game.team1Name].totalScore += game.team1Score;
+                if (game.winner === game.team1Name) {
+                    stats.teams[game.team1Name].wins++;
+                } else {
+                    stats.teams[game.team1Name].losses++;
+                }
+                
+                // Team 2
+                if (!stats.teams[game.team2Name]) {
+                    stats.teams[game.team2Name] = { wins: 0, losses: 0, totalScore: 0, games: 0 };
+                }
+                stats.teams[game.team2Name].games++;
+                stats.teams[game.team2Name].totalScore += game.team2Score;
+                if (game.winner === game.team2Name) {
+                    stats.teams[game.team2Name].wins++;
+                } else {
+                    stats.teams[game.team2Name].losses++;
+                }
+                
+                // Track highest/lowest scores
+                stats.highestScore = Math.max(stats.highestScore, game.team1Score, game.team2Score);
+                stats.lowestScore = Math.min(stats.lowestScore, game.team1Score, game.team2Score);
+            });
+            
+            let html = `
+                <div style="display: flex; flex-direction: column; gap: clamp(15px, 3vw, 20px);">
+                    <div style="background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: clamp(15px, 3vw, 20px);">
+                        <h3 style="margin: 0 0 15px 0; font-size: clamp(16px, 3vw, 18px); color: #374151;">📊 Overall Statistics</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;">
+                            <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: clamp(24px, 5vw, 32px); font-weight: 700; color: #667eea;">${stats.totalGames}</div>
+                                <div style="font-size: clamp(12px, 2.5vw, 13px); color: #6b7280;">Total Games</div>
+                            </div>
+                            
+                            <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: clamp(24px, 5vw, 32px); font-weight: 700; color: #10b981;">${stats.totalHands}</div>
+                                <div style="font-size: clamp(12px, 2.5vw, 13px); color: #6b7280;">Total Hands</div>
+                            </div>
+                            
+                            <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: clamp(24px, 5vw, 32px); font-weight: 700; color: #f59e0b;">${stats.avgHandsPerGame}</div>
+                                <div style="font-size: clamp(12px, 2.5vw, 13px); color: #6b7280;">Avg Hands/Game</div>
+                            </div>
+                            
+                            <div style="background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: clamp(24px, 5vw, 32px); font-weight: 700; color: #ef4444;">${stats.highestScore}</div>
+                                <div style="font-size: clamp(12px, 2.5vw, 13px); color: #6b7280;">Highest Score</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: clamp(15px, 3vw, 20px);">
+                        <h3 style="margin: 0 0 15px 0; font-size: clamp(16px, 3vw, 18px); color: #374151;">🏆 Team Records</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+            `;
+            
+            Object.entries(stats.teams).forEach(([teamName, teamStats]) => {
+                const winRate = Math.round((teamStats.wins / teamStats.games) * 100);
+                const avgScore = Math.round(teamStats.totalScore / teamStats.games);
+                
+                html += `
+                    <div style="background: white; padding: 15px; border-radius: 8px;">
+                        <div style="font-size: clamp(15px, 3vw, 16px); font-weight: 700; color: #1f2937; margin-bottom: 8px;">
+                            ${teamName}
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; font-size: clamp(12px, 2.5vw, 13px);">
+                            <div>
+                                <span style="color: #6b7280;">Record:</span>
+                                <span style="font-weight: 600; color: #1f2937;"> ${teamStats.wins}-${teamStats.losses}</span>
+                            </div>
+                            <div>
+                                <span style="color: #6b7280;">Win Rate:</span>
+                                <span style="font-weight: 600; color: #10b981;"> ${winRate}%</span>
+                            </div>
+                            <div>
+                                <span style="color: #6b7280;">Avg Score:</span>
+                                <span style="font-weight: 600; color: #667eea;"> ${avgScore}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function loadPlayerStats() {
+            const container = document.getElementById('playerStatsList');
+            const games = JSON.parse(localStorage.getItem('allGames500') || '[]');
+            
+            if (games.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280; font-size: clamp(16px, 3vw, 18px); text-align: center; padding: clamp(30px, 6vw, 40px);">No games completed yet. Player statistics will appear after completing your first game.</p>';
+                return;
+            }
+            
+            // Aggregate player statistics across all games
+            const playerStats = {};
+            
+            games.forEach(game => {
+                if (!game.history) return;
+                
+                game.history.forEach(hand => {
+                    if (!hand.bidderName || !hand.bidder) return;
+                    
+                    const playerName = hand.bidderName;
+                    
+                    if (!playerStats[playerName]) {
+                        playerStats[playerName] = {
+                            bids: 0,
+                            successful: 0,
+                            failed: 0,
+                            totalPoints: 0,
+                            bidTypes: {},
+                            gamesPlayed: new Set()
+                        };
+                    }
+                    
+                    playerStats[playerName].bids++;
+                    
+                    if (hand.success) {
+                        playerStats[playerName].successful++;
+                    } else {
+                        playerStats[playerName].failed++;
+                    }
+                    
+                    playerStats[playerName].totalPoints += hand.contractorPoints || 0;
+                    
+                    // Track bid types
+                    if (hand.bid) {
+                        const bidStr = hand.bid;
+                        playerStats[playerName].bidTypes[bidStr] = (playerStats[playerName].bidTypes[bidStr] || 0) + 1;
+                    }
+                    
+                    // Track unique games
+                    playerStats[playerName].gamesPlayed.add(game.timestamp);
+                });
+            });
+            
+            // Convert to array and sort by total bids
+            const playerStatsArray = Object.entries(playerStats)
+                .map(([name, stats]) => ({
+                    name,
+                    bids: stats.bids,
+                    successful: stats.successful,
+                    failed: stats.failed,
+                    successRate: Math.round((stats.successful / stats.bids) * 100),
+                    avgPoints: Math.round(stats.totalPoints / stats.bids),
+                    gamesPlayed: stats.gamesPlayed.size,
+                    bidTypes: stats.bidTypes
+                }))
+                .sort((a, b) => b.bids - a.bids);
+            
+            if (playerStatsArray.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280; font-size: clamp(16px, 3vw, 18px); text-align: center; padding: clamp(30px, 6vw, 40px);">No player data available.</p>';
+                return;
+            }
+            
+            let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+            
+            playerStatsArray.forEach((stats, index) => {
+                // Find most common bid
+                let favoriteBid = 'N/A';
+                if (Object.keys(stats.bidTypes).length > 0) {
+                    const sortedBids = Object.entries(stats.bidTypes).sort((a, b) => b[1] - a[1]);
+                    favoriteBid = sortedBids[0][0];
+                    // Format bid with suit symbols
+                    favoriteBid = favoriteBid
+                        .replace('SPADES', '♠')
+                        .replace('CLUBS', '♣')
+                        .replace('DIAMONDS', '♦')
+                        .replace('HEARTS', '♥')
+                        .replace('NOTRUMPS', 'NT');
+                }
+                
+                // Alternate colors
+                const bgColor = index % 2 === 0 ? 'rgba(26,26,26,0.05)' : 'rgba(0,212,170,0.05)';
+                const borderColor = index % 2 === 0 ? '#1a1a1a' : '#00d4aa';
+                const nameColor = index % 2 === 0 ? '#1a1a1a' : '#00d4aa';
+                
+                html += `
+                    <div style="background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 8px; padding: 15px;">
+                        <div style="font-size: clamp(15px, 3vw, 16px); font-weight: 700; color: ${nameColor}; margin-bottom: 8px;">
+                            ${stats.name}
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; font-size: clamp(12px, 2.5vw, 13px);">
+                            <div>
+                                <span style="color: #6b7280;">Games:</span>
+                                <span style="font-weight: 600; color: #1f2937;"> ${stats.gamesPlayed}</span>
+                            </div>
+                            <div>
+                                <span style="color: #6b7280;">Bids:</span>
+                                <span style="font-weight: 600; color: #1f2937;"> ${stats.bids}</span>
+                            </div>
+                            <div>
+                                <span style="color: #6b7280;">Record:</span>
+                                <span style="font-weight: 600; color: ${stats.successful > stats.failed ? '#10b981' : '#ef4444'};"> ${stats.successful}-${stats.failed}</span>
+                            </div>
+                            <div>
+                                <span style="color: #6b7280;">Success:</span>
+                                <span style="font-weight: 600; color: ${stats.successRate >= 50 ? '#10b981' : '#ef4444'};"> ${stats.successRate}%</span>
+                            </div>
+                            <div>
+                                <span style="color: #6b7280;">Avg Pts:</span>
+                                <span style="font-weight: 600; color: #667eea;"> ${stats.avgPoints}</span>
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                                <span style="color: #6b7280;">Favorite:</span>
+                                <span style="font-weight: 600; color: #1f2937;"> ${favoriteBid}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
