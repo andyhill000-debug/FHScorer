@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.3.0
+    Version: 3.4.0
     Released: 2025-03-26
-    Individual player bid displays + better Team 2 contrast
+    Removed info boxes, enhanced visual highlighting
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -382,22 +382,7 @@
 
     <div class="container">
 
-        <!-- Current Bidder and Bid History Display -->
-        <div id="biddingInfoContainer" style="display: none; margin-bottom: 10px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                <!-- Current Bidder Display -->
-                <div id="currentBidderBox" style="background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.25); border-radius: 6px; padding: 8px; text-align: center; min-height: 50px; display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 10px; color: rgba(251,191,36,0.7); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">Bidder</div>
-                    <div id="currentBidderDisplay" style="font-size: 13px; font-weight: 700; color: var(--teal);"></div>
-                </div>
-                
-                <!-- Bid History Display -->
-                <div id="bidHistoryInlineBox" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25); border-radius: 6px; padding: 8px; overflow-x: auto; text-align: center; min-height: 50px; display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 10px; color: rgba(59,130,246,0.7); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">Bids</div>
-                    <div id="bidHistoryInlineList" style="font-size: 11px; font-weight: 600; color: var(--text-secondary); white-space: nowrap;"></div>
-                </div>
-            </div>
-        </div>
+        <!-- Info boxes removed - visual highlighting on player boxes shows current bidder -->
 
         <div id="gameTab">
             <!-- TEAM 1 - Players side by side -->
@@ -425,12 +410,11 @@
                                 <input type="radio" name="dealer" value="team1Player1" onchange="selectDealer('team1Player1')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
                                 <input type="text" class="player-input" id="team1Player1" placeholder="P1" style="flex: 1; background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; min-width: 0;">
                             </div>
-                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
-                                <span id="dealer1Icon" style="display: none; font-size: 14px;">🎴</span>
-                                <span id="bidder1Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 22px; align-items: center;">
+                                <span id="dealer1Icon" style="display: none; font-size: 16px;">🎴</span>
                             </div>
                         </div>
-                        <div id="player1Bid" style="background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: var(--teal); min-height: 24px; display: none;">-</div>
+                        <div id="player1Bid" style="background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); border-radius: 4px; padding: 4px 2px; text-align: center; font-size: 10px; font-weight: 700; color: var(--teal); min-height: 28px; display: none; line-height: 1.3; word-break: break-word;">-</div>
                     </div>
                     
                     <!-- Player 3 -->
@@ -440,12 +424,11 @@
                                 <input type="radio" name="dealer" value="team1Player2" onchange="selectDealer('team1Player2')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
                                 <input type="text" class="player-input" id="team1Player2" placeholder="P3" style="flex: 1; background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; min-width: 0;">
                             </div>
-                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
-                                <span id="dealer3Icon" style="display: none; font-size: 14px;">🎴</span>
-                                <span id="bidder3Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 22px; align-items: center;">
+                                <span id="dealer3Icon" style="display: none; font-size: 16px;">🎴</span>
                             </div>
                         </div>
-                        <div id="player3Bid" style="background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: var(--teal); min-height: 24px; display: none;">-</div>
+                        <div id="player3Bid" style="background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); border-radius: 4px; padding: 4px 2px; text-align: center; font-size: 10px; font-weight: 700; color: var(--teal); min-height: 28px; display: none; line-height: 1.3; word-break: break-word;">-</div>
                     </div>
                 </div>
             </div>
@@ -475,12 +458,11 @@
                                 <input type="radio" name="dealer" value="team2Player1" onchange="selectDealer('team2Player1')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
                                 <input type="text" class="player-input" id="team2Player1" placeholder="P2" style="flex: 1; background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; min-width: 0;">
                             </div>
-                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
-                                <span id="dealer2Icon" style="display: none; font-size: 14px;">🎴</span>
-                                <span id="bidder2Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 22px; align-items: center;">
+                                <span id="dealer2Icon" style="display: none; font-size: 16px;">🎴</span>
                             </div>
                         </div>
-                        <div id="player2Bid" style="background: rgba(26,26,26,0.15); border: 1px solid rgba(26,26,26,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: #1a1a1a; min-height: 24px; display: none;">-</div>
+                        <div id="player2Bid" style="background: rgba(26,26,26,0.15); border: 1px solid rgba(26,26,26,0.3); border-radius: 4px; padding: 4px 2px; text-align: center; font-size: 10px; font-weight: 700; color: #1a1a1a; min-height: 28px; display: none; line-height: 1.3; word-break: break-word;">-</div>
                     </div>
                     
                     <!-- Player 4 -->
@@ -490,12 +472,11 @@
                                 <input type="radio" name="dealer" value="team2Player2" onchange="selectDealer('team2Player2')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
                                 <input type="text" class="player-input" id="team2Player2" placeholder="P4" style="flex: 1; background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; min-width: 0;">
                             </div>
-                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
-                                <span id="dealer4Icon" style="display: none; font-size: 14px;">🎴</span>
-                                <span id="bidder4Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 22px; align-items: center;">
+                                <span id="dealer4Icon" style="display: none; font-size: 16px;">🎴</span>
                             </div>
                         </div>
-                        <div id="player4Bid" style="background: rgba(26,26,26,0.15); border: 1px solid rgba(26,26,26,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: #1a1a1a; min-height: 24px; display: none;">-</div>
+                        <div id="player4Bid" style="background: rgba(26,26,26,0.15); border: 1px solid rgba(26,26,26,0.3); border-radius: 4px; padding: 4px 2px; text-align: center; font-size: 10px; font-weight: 700; color: #1a1a1a; min-height: 28px; display: none; line-height: 1.3; word-break: break-word;">-</div>
                     </div>
                 </div>
             </div>
@@ -680,15 +661,15 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.3.0";
+        const APP_VERSION = "3.4.0";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ NEW: Each player's bid shows below their box",
-            "✅ NEW: Dark text on teal background (better contrast)",
-            "✅ Player inputs now dark text on Team 2",
-            "✅ Live bid tracking during bidding phase",
-            "✅ Bids clear when hand completes",
-            "✅ Much easier to see who bid what!"
+            "✅ NEW: Removed info boxes (Bidder/Bids) - more space!",
+            "✅ NEW: Orange glow border shows current bidder",
+            "✅ NEW: Enhanced dealer icon with badge",
+            "✅ Removed 👉 icon - border highlight instead",
+            "✅ Cleaner, more spacious layout",
+            "✅ Better visual hierarchy"
         ];
         
         function showVersion() {
@@ -831,16 +812,25 @@
                 
                 if (box) {
                     if (isCurrentBidder) {
-                        box.style.border = '2px solid var(--teal)';
-                        box.style.background = 'rgba(0,212,170,0.12)';
+                        // Prominent highlight for current bidder
+                        box.style.border = '3px solid #f59e0b';
+                        box.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.3), 0 0 12px rgba(245,158,11,0.5)';
+                        box.style.background = 'rgba(245,158,11,0.15)';
                     } else {
                         box.style.border = '2px solid transparent';
-                        box.style.background = 'rgba(255,255,255,0.08)';
+                        box.style.boxShadow = 'none';
+                        // Reset background based on team
+                        if (player.startsWith('team1')) {
+                            box.style.background = 'rgba(255,255,255,0.08)';
+                        } else {
+                            box.style.background = 'rgba(0,0,0,0.08)';
+                        }
                     }
                 }
                 
+                // Hide bidder icons - we're using border highlighting instead
                 if (icon) {
-                    icon.style.display = isCurrentBidder ? 'inline' : 'none';
+                    icon.style.display = 'none';
                 }
             });
         }
@@ -855,7 +845,17 @@
                 const icon = document.getElementById(icons[index]);
                 const isDealer = gameState.dealer === player;
                 
-                if (icon) icon.style.display = isDealer ? 'inline' : 'none';
+                if (icon) {
+                    icon.style.display = isDealer ? 'inline-block' : 'none';
+                    if (isDealer) {
+                        // Add prominent styling to dealer icon
+                        icon.style.background = 'rgba(156,163,175,0.3)';
+                        icon.style.padding = '3px 8px';
+                        icon.style.borderRadius = '4px';
+                        icon.style.fontSize = '16px';
+                        icon.style.border = '1px solid rgba(156,163,175,0.5)';
+                    }
+                }
             });
             
             // Update radio button checked state
@@ -1153,24 +1153,9 @@
         }
 
         function updateBiddingDisplay() {
-            // Update current bidder display - simplified for mobile
-            const currentBidderName = getPlayerName(gameState.currentBidder);
-            document.getElementById('currentBidderDisplay').innerHTML = currentBidderName;
+            // Info boxes removed - visual highlighting on player boxes shows current bidder
             
-            // Update inline bid history display - show last 3 bids
-            const bidHistoryInlineList = document.getElementById('bidHistoryInlineList');
-            if (gameState.biddingSequence.length > 0) {
-                const lastBids = [...gameState.biddingSequence].slice(-3).reverse();
-                const bids = lastBids.map(entry => {
-                    const shortName = entry.playerName.split(' ')[0]; // First name only
-                    return `${shortName}: ${entry.bid}`;
-                }).join(' • ');
-                bidHistoryInlineList.innerHTML = bids;
-            } else {
-                bidHistoryInlineList.innerHTML = 'No bids yet';
-            }
-            
-            // Update individual player bid displays
+            // Update individual player bid displays - show ALL bids in sequence
             const playerBidMap = {
                 'team1Player1': 'player1Bid',
                 'team1Player2': 'player3Bid',
@@ -1187,15 +1172,28 @@
                 }
             });
             
-            // Show bids for players who have bid
+            // Collect all bids for each player
+            const playerBids = {
+                'team1Player1': [],
+                'team1Player2': [],
+                'team2Player1': [],
+                'team2Player2': []
+            };
+            
             gameState.biddingSequence.forEach(entry => {
-                const bidId = playerBidMap[entry.player];
-                if (bidId) {
-                    const bidEl = document.getElementById(bidId);
-                    if (bidEl) {
-                        bidEl.textContent = entry.bid;
-                        bidEl.style.display = 'block';
-                    }
+                if (playerBids[entry.player]) {
+                    playerBids[entry.player].push(entry.bid);
+                }
+            });
+            
+            // Display all bids for each player in sequence
+            Object.keys(playerBidMap).forEach(player => {
+                const bidId = playerBidMap[player];
+                const bidEl = document.getElementById(bidId);
+                if (bidEl && playerBids[player].length > 0) {
+                    // Show bids separated by arrows
+                    bidEl.textContent = playerBids[player].join(' → ');
+                    bidEl.style.display = 'block';
                 }
             });
             
@@ -1640,7 +1638,6 @@
                 document.getElementById('trickSelectionSection').style.display = 'none';
                 document.getElementById('tipBox').style.display = 'none';
                 document.getElementById('bidderWarning').style.display = 'none';
-                document.getElementById('biddingInfoContainer').style.display = 'block';
                 updateBiddingDisplay();
                 createBiddingPhaseTable();
             } else {
@@ -1648,7 +1645,6 @@
                 document.getElementById('biddingCompleteSection').style.display = 'block';
                 document.getElementById('trickSelectionSection').style.display = 'block';
                 document.getElementById('tipBox').style.display = 'none';
-                document.getElementById('biddingInfoContainer').style.display = 'none';
                 
                 // Show final bid info
                 const bidderName = getPlayerName(gameState.bidder);
