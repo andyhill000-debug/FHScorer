@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+    Hillfred's 500 Scorer
+    Version: 2.0.0
+    Released: 2025-03-26
+    Tap the Hillfred logo to view version info
+-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,6 +17,9 @@
         .container { max-width: 1200px; margin: 0 auto; padding: clamp(10px, 3vw, 20px); }
         .header { background: #fafafa; padding: clamp(20px, 5vw, 30px); border-radius: 12px; margin-bottom: clamp(15px, 4vw, 30px); border: 2px solid #e5e7eb; }
         .header h2 { margin: 0; font-size: clamp(18px, 4vw, 24px); color: #1a1a1a; font-weight: 600; text-align: center; }
+        .logo-clickable { transition: opacity 0.2s, transform 0.2s; }
+        .logo-clickable:hover { opacity: 0.8; transform: scale(1.02); }
+        .logo-clickable:active { transform: scale(0.98); }
         .view-selector { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: clamp(15px, 3vw, 20px); margin-bottom: clamp(15px, 4vw, 30px); }
         .view-selector-inner { display: flex; flex-direction: row; gap: clamp(15px, 3vw, 20px); align-items: center; flex-wrap: wrap; }
         @media (max-width: 600px) { .view-selector-inner { flex-direction: column; align-items: flex-start; } }
@@ -227,7 +236,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" style="width: clamp(280px, 60vw, 400px); height: auto; display: block; margin: 0 auto;">
+            <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" class="logo-clickable" style="width: clamp(280px, 60vw, 400px); height: auto; display: block; margin: 0 auto; cursor: pointer;" onclick="showVersion()">
               <g transform="translate(50, 60)">
                 <g transform="rotate(45 28 28)">
                   <rect x="0" y="0" width="16" height="16" fill="#1a1a1a" rx="1"/>
@@ -306,7 +315,12 @@
                 <!-- Team 1 Score -->
                 <div style="background: #1a1a1a; padding: 15px; border-radius: 8px; text-align: center; color: white;">
                     <input type="text" class="team-input" id="team1Name" value="Team 1" style="background: rgba(255,255,255,0.2); border: none; padding: 6px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; width: 100%; text-align: center; margin-bottom: 8px; box-sizing: border-box;">
-                    <div style="font-size: clamp(28px, 6vw, 36px); font-weight: 700;" id="team1Score">0</div>
+                    <div style="font-size: clamp(28px, 6vw, 36px); font-weight: 700; margin-bottom: 8px;" id="team1Score">0</div>
+                    <!-- Progress bar to 500 -->
+                    <div style="background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div id="team1Progress" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div style="font-size: clamp(10px, 2vw, 11px); color: rgba(255,255,255,0.7); margin-top: 4px;" id="team1ProgressText">0/500</div>
                 </div>
             </div>
             
@@ -339,7 +353,12 @@
                 <!-- Team 2 Score -->
                 <div style="background: #00d4aa; padding: 15px; border-radius: 8px; text-align: center; color: white;">
                     <input type="text" class="team-input" id="team2Name" value="Team 2" style="background: rgba(255,255,255,0.2); border: none; padding: 6px; border-radius: 4px; color: white; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; width: 100%; text-align: center; margin-bottom: 8px; box-sizing: border-box;">
-                    <div style="font-size: clamp(28px, 6vw, 36px); font-weight: 700;" id="team2Score">0</div>
+                    <div style="font-size: clamp(28px, 6vw, 36px); font-weight: 700; margin-bottom: 8px;" id="team2Score">0</div>
+                    <!-- Progress bar to 500 -->
+                    <div style="background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div id="team2Progress" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div style="font-size: clamp(10px, 2vw, 11px); color: rgba(255,255,255,0.7); margin-top: 4px;" id="team2ProgressText">0/500</div>
                 </div>
             </div>
 
@@ -427,7 +446,12 @@
             </div>
 
             <div id="handHistory" class="card hidden">
-                <h3 style="margin-top: 0; font-size: clamp(18px, 3vw, 20px);">Hand History</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="margin: 0; font-size: clamp(18px, 3vw, 20px);">Hand History</h3>
+                    <button onclick="undoLastHand()" style="padding: 8px 16px; background: #fee2e2; color: #991b1b; border: 2px solid #fecaca; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer;">
+                        ↩️ Undo Last Hand
+                    </button>
+                </div>
                 <div class="table-container">
                     <table id="historyTable"></table>
                 </div>
@@ -517,6 +541,22 @@
     </div>
 
     <script>
+        // Version tracking
+        const APP_VERSION = "2.0.0";
+        const VERSION_DATE = "2025-03-26";
+        const VERSION_NOTES = [
+            "✅ Fixed: Must win via successful bid reaching 500+ (critical bug fix)",
+            "✅ Added: Undo Last Hand feature",
+            "✅ Added: Visual progress bars to 500/-500",
+            "✅ Fixed: Pass/Misère buttons now horizontal on mobile",
+            "✅ Improved: Player box visibility with badged icons"
+        ];
+        
+        function showVersion() {
+            const notes = VERSION_NOTES.map(note => `  ${note}`).join('\n');
+            alert(`🎯 Hillfred's 500 Scorer\n\nVersion: ${APP_VERSION}\nReleased: ${VERSION_DATE}\n\nWhat's New:\n${notes}`);
+        }
+        
         const SCORING_TABLE = {
             6: { SPADES: 40, CLUBS: 60, DIAMONDS: 80, HEARTS: 100, NOTRUMPS: 120, MISERE: 250 },
             7: { SPADES: 140, CLUBS: 160, DIAMONDS: 180, HEARTS: 200, NOTRUMPS: 220 },
@@ -1250,7 +1290,23 @@
             gameState.team2Score = hand.team2Score;
             gameState.currentHand++;
 
-            const gameEnded = gameState.team1Score >= 500 || gameState.team2Score >= 500 || gameState.team1Score <= -500 || gameState.team2Score <= -500;
+            // Check for game end - CORRECT 500 RULES:
+            // - Can ONLY win (500+) by making a successful bid that reaches 500+
+            // - Can lose (-500) from failed bids
+            let gameEnded = false;
+            
+            // Check for valid win: successful bid reaching 500+
+            if (contractorPoints > 0) { // Successful bid
+                const contractorScore = gameState.contractor === 'team1' ? gameState.team1Score : gameState.team2Score;
+                if (contractorScore >= 500) {
+                    gameEnded = true;
+                }
+            }
+            
+            // Check for loss: any team reaching -500
+            if (gameState.team1Score <= -500 || gameState.team2Score <= -500) {
+                gameEnded = true;
+            }
             
             if (gameEnded) {
                 saveGame();
@@ -1277,6 +1333,37 @@
             gameState.currentBidder = order[(dealerIndex + 1) % 4];
             
             updateDealerDisplay();
+            updateDisplay();
+        }
+
+        function undoLastHand() {
+            if (gameState.history.length === 0) {
+                alert('No hands to undo!');
+                return;
+            }
+            
+            if (!confirm('⚠️ Undo the last hand? This will reverse the score changes.')) {
+                return;
+            }
+            
+            // Remove the last hand
+            gameState.history.pop();
+            gameState.currentHand--;
+            
+            // Restore scores from previous hand (or 0 if no history)
+            if (gameState.history.length > 0) {
+                const lastHand = gameState.history[gameState.history.length - 1];
+                gameState.team1Score = lastHand.team1Score;
+                gameState.team2Score = lastHand.team2Score;
+            } else {
+                gameState.team1Score = 0;
+                gameState.team2Score = 0;
+            }
+            
+            // Save updated state
+            localStorage.setItem('currentGame500', JSON.stringify(gameState));
+            
+            // Update display
             updateDisplay();
         }
 
@@ -1369,6 +1456,41 @@
                 document.getElementById('team1Score').textContent = gameState.team1Score;
                 document.getElementById('team2Score').textContent = gameState.team2Score;
                 document.getElementById('currentHand').textContent = gameState.currentHand;
+                
+                // Update progress bars - show progress to 500 (win) or -500 (loss)
+                let team1Percent, team1Color, team1Text;
+                if (gameState.team1Score >= 0) {
+                    // Positive: show progress to 500 (green)
+                    team1Percent = Math.min(100, (gameState.team1Score / 500) * 100);
+                    team1Color = '#10b981';
+                    team1Text = gameState.team1Score + ' / 500';
+                } else {
+                    // Negative: show progress to -500 (red)
+                    team1Percent = Math.min(100, (Math.abs(gameState.team1Score) / 500) * 100);
+                    team1Color = '#ef4444';
+                    team1Text = gameState.team1Score + ' / -500';
+                }
+                
+                let team2Percent, team2Color, team2Text;
+                if (gameState.team2Score >= 0) {
+                    // Positive: show progress to 500 (green)
+                    team2Percent = Math.min(100, (gameState.team2Score / 500) * 100);
+                    team2Color = '#10b981';
+                    team2Text = gameState.team2Score + ' / 500';
+                } else {
+                    // Negative: show progress to -500 (red)
+                    team2Percent = Math.min(100, (Math.abs(gameState.team2Score) / 500) * 100);
+                    team2Color = '#ef4444';
+                    team2Text = gameState.team2Score + ' / -500';
+                }
+                
+                document.getElementById('team1Progress').style.width = team1Percent + '%';
+                document.getElementById('team1Progress').style.background = team1Color;
+                document.getElementById('team1ProgressText').textContent = team1Text;
+                
+                document.getElementById('team2Progress').style.width = team2Percent + '%';
+                document.getElementById('team2Progress').style.background = team2Color;
+                document.getElementById('team2ProgressText').textContent = team2Text;
                 
                 updateTeamBoxes();
             
