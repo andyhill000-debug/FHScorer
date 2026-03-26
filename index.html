@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.1.0
+    Version: 3.3.0
     Released: 2025-03-26
-    Major mobile UX overhaul - nested players, compact layout
+    Individual player bid displays + better Team 2 contrast
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -149,6 +149,9 @@
         .team-input::placeholder { color: rgba(255,255,255,0.7); }
         .player-input { background: rgba(255,255,255,0.2); border: none; padding: clamp(6px, 1.5vw, 8px); border-radius: 6px; color: white; font-size: clamp(13px, 2.5vw, 14px); width: 100%; }
         .player-input::placeholder { color: rgba(255,255,255,0.7); }
+        
+        /* Dark placeholders for Team 2 (teal background) */
+        #team2Player1::placeholder, #team2Player2::placeholder, #team2Name::placeholder { color: rgba(0,0,0,0.5); }
         .score-display { font-size: clamp(36px, 10vw, 48px); font-weight: 700; text-align: center; }
         .card { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 12px; padding: clamp(15px, 4vw, 30px); margin-bottom: clamp(15px, 3vw, 20px); transition: background-color 0.3s ease, border-color 0.3s ease; }
         .btn-primary { width: 100%; padding: clamp(14px, 3vw, 16px); background: #10b981; color: white; border: none; border-radius: 8px; font-size: clamp(16px, 3vw, 18px); font-weight: 600; cursor: pointer; min-height: 50px; }
@@ -380,118 +383,146 @@
     <div class="container">
 
         <!-- Current Bidder and Bid History Display -->
-        <div id="biddingInfoContainer" style="display: none; margin-bottom: 12px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div id="biddingInfoContainer" style="display: none; margin-bottom: 10px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                 <!-- Current Bidder Display -->
-                <div id="currentBidderBox" style="background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60px;">
-                    <div style="font-size: 11px; color: rgba(251,191,36,0.8); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Current Bidder</div>
-                    <div id="currentBidderDisplay" style="font-size: 14px; font-weight: 700; color: var(--teal); text-align: center;"></div>
+                <div id="currentBidderBox" style="background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.25); border-radius: 6px; padding: 8px; text-align: center; min-height: 50px; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 10px; color: rgba(251,191,36,0.7); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">Bidder</div>
+                    <div id="currentBidderDisplay" style="font-size: 13px; font-weight: 700; color: var(--teal);"></div>
                 </div>
                 
                 <!-- Bid History Display -->
-                <div id="bidHistoryInlineBox" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; padding: 10px; overflow-x: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60px;">
-                    <div style="font-size: 11px; color: rgba(59,130,246,0.8); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">Bids</div>
-                    <div id="bidHistoryInlineList" style="font-size: 12px; font-weight: 600; text-align: center; color: var(--text-secondary);"></div>
+                <div id="bidHistoryInlineBox" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25); border-radius: 6px; padding: 8px; overflow-x: auto; text-align: center; min-height: 50px; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 10px; color: rgba(59,130,246,0.7); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">Bids</div>
+                    <div id="bidHistoryInlineList" style="font-size: 11px; font-weight: 600; color: var(--text-secondary); white-space: nowrap;"></div>
                 </div>
             </div>
         </div>
 
         <div id="gameTab">
-            <!-- TEAM 1 - Compact nested design -->
-            <div style="background: #1a1a1a; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 2px solid var(--border-color);">
-                <!-- Team header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <input type="text" class="team-input" id="team1Name" value="Team 1" style="background: rgba(255,255,255,0.15); border: none; padding: 6px 10px; border-radius: 6px; color: white; font-size: 15px; font-weight: 700; width: auto;">
+            <!-- TEAM 1 - Players side by side -->
+            <div style="background: #1a1a1a; border-radius: 10px; padding: 10px; margin-bottom: 10px; border: 2px solid var(--border-color);">
+                <!-- Team header with score -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <input type="text" class="team-input" id="team1Name" value="Team 1" style="background: rgba(255,255,255,0.15); border: none; padding: 5px 8px; border-radius: 4px; color: white; font-size: 14px; font-weight: 700; width: auto; max-width: 45%;">
                     <div style="text-align: right;">
-                        <div style="font-size: 32px; font-weight: 700; color: white; line-height: 1;" id="team1Score">0</div>
-                        <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px;" id="team1ProgressText">0/500</div>
+                        <div style="font-size: 28px; font-weight: 700; color: white; line-height: 1;" id="team1Score">0</div>
+                        <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 2px;" id="team1ProgressText">0/500</div>
                     </div>
                 </div>
                 
                 <!-- Progress bar -->
-                <div style="background: rgba(255,255,255,0.15); height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 10px;">
+                <div style="background: rgba(255,255,255,0.15); height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 8px;">
                     <div id="team1Progress" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
                 </div>
                 
-                <!-- Players - compact rows -->
-                <div style="display: flex; flex-direction: column; gap: 6px;">
+                <!-- Players - side by side -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                     <!-- Player 1 -->
-                    <div id="player1Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 8px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="dealer" value="team1Player1" onchange="selectDealer('team1Player1')" style="width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
-                        <input type="text" class="player-input" id="team1Player1" placeholder="Player 1" style="flex: 1; background: transparent; border: none; padding: 4px; color: white; font-size: 14px; font-weight: 600; min-width: 0;">
-                        <span id="dealer1Icon" style="display: none; font-size: 16px; flex-shrink: 0;">🎴</span>
-                        <span id="bidder1Icon" style="display: none; background: #f59e0b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: 700; flex-shrink: 0;">👉</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div id="player1Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                                <input type="radio" name="dealer" value="team1Player1" onchange="selectDealer('team1Player1')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
+                                <input type="text" class="player-input" id="team1Player1" placeholder="P1" style="flex: 1; background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; min-width: 0;">
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
+                                <span id="dealer1Icon" style="display: none; font-size: 14px;">🎴</span>
+                                <span id="bidder1Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            </div>
+                        </div>
+                        <div id="player1Bid" style="background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: var(--teal); min-height: 24px; display: none;">-</div>
                     </div>
                     
                     <!-- Player 3 -->
-                    <div id="player3Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 8px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="dealer" value="team1Player2" onchange="selectDealer('team1Player2')" style="width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
-                        <input type="text" class="player-input" id="team1Player2" placeholder="Player 3" style="flex: 1; background: transparent; border: none; padding: 4px; color: white; font-size: 14px; font-weight: 600; min-width: 0;">
-                        <span id="dealer3Icon" style="display: none; font-size: 16px; flex-shrink: 0;">🎴</span>
-                        <span id="bidder3Icon" style="display: none; background: #f59e0b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: 700; flex-shrink: 0;">👉</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div id="player3Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                                <input type="radio" name="dealer" value="team1Player2" onchange="selectDealer('team1Player2')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
+                                <input type="text" class="player-input" id="team1Player2" placeholder="P3" style="flex: 1; background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; min-width: 0;">
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
+                                <span id="dealer3Icon" style="display: none; font-size: 14px;">🎴</span>
+                                <span id="bidder3Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            </div>
+                        </div>
+                        <div id="player3Bid" style="background: rgba(0,212,170,0.15); border: 1px solid rgba(0,212,170,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: var(--teal); min-height: 24px; display: none;">-</div>
                     </div>
                 </div>
             </div>
             
-            <!-- TEAM 2 - Compact nested design -->
-            <div style="background: #00d4aa; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 2px solid var(--border-color);">
-                <!-- Team header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <input type="text" class="team-input" id="team2Name" value="Team 2" style="background: rgba(255,255,255,0.15); border: none; padding: 6px 10px; border-radius: 6px; color: white; font-size: 15px; font-weight: 700; width: auto;">
+            <!-- TEAM 2 - Players side by side with dark text -->
+            <div style="background: #00d4aa; border-radius: 10px; padding: 10px; margin-bottom: 10px; border: 2px solid var(--border-color);">
+                <!-- Team header with score -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <input type="text" class="team-input" id="team2Name" value="Team 2" style="background: rgba(0,0,0,0.15); border: none; padding: 5px 8px; border-radius: 4px; color: #1a1a1a; font-size: 14px; font-weight: 700; width: auto; max-width: 45%;">
                     <div style="text-align: right;">
-                        <div style="font-size: 32px; font-weight: 700; color: white; line-height: 1;" id="team2Score">0</div>
-                        <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px;" id="team2ProgressText">0/500</div>
+                        <div style="font-size: 28px; font-weight: 700; color: #1a1a1a; line-height: 1;" id="team2Score">0</div>
+                        <div style="font-size: 10px; color: rgba(0,0,0,0.6); margin-top: 2px;" id="team2ProgressText">0/500</div>
                     </div>
                 </div>
                 
                 <!-- Progress bar -->
-                <div style="background: rgba(255,255,255,0.15); height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 10px;">
+                <div style="background: rgba(0,0,0,0.15); height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 8px;">
                     <div id="team2Progress" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
                 </div>
                 
-                <!-- Players - compact rows -->
-                <div style="display: flex; flex-direction: column; gap: 6px;">
+                <!-- Players - side by side -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                     <!-- Player 2 -->
-                    <div id="player2Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 8px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="dealer" value="team2Player1" onchange="selectDealer('team2Player1')" style="width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
-                        <input type="text" class="player-input" id="team2Player1" placeholder="Player 2" style="flex: 1; background: transparent; border: none; padding: 4px; color: white; font-size: 14px; font-weight: 600; min-width: 0;">
-                        <span id="dealer2Icon" style="display: none; font-size: 16px; flex-shrink: 0;">🎴</span>
-                        <span id="bidder2Icon" style="display: none; background: #f59e0b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: 700; flex-shrink: 0;">👉</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div id="player2Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                                <input type="radio" name="dealer" value="team2Player1" onchange="selectDealer('team2Player1')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
+                                <input type="text" class="player-input" id="team2Player1" placeholder="P2" style="flex: 1; background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; min-width: 0;">
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
+                                <span id="dealer2Icon" style="display: none; font-size: 14px;">🎴</span>
+                                <span id="bidder2Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            </div>
+                        </div>
+                        <div id="player2Bid" style="background: rgba(26,26,26,0.15); border: 1px solid rgba(26,26,26,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: #1a1a1a; min-height: 24px; display: none;">-</div>
                     </div>
                     
                     <!-- Player 4 -->
-                    <div id="player4Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 8px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="dealer" value="team2Player2" onchange="selectDealer('team2Player2')" style="width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;">
-                        <input type="text" class="player-input" id="team2Player2" placeholder="Player 4" style="flex: 1; background: transparent; border: none; padding: 4px; color: white; font-size: 14px; font-weight: 600; min-width: 0;">
-                        <span id="dealer4Icon" style="display: none; font-size: 16px; flex-shrink: 0;">🎴</span>
-                        <span id="bidder4Icon" style="display: none; background: #f59e0b; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 14px; font-weight: 700; flex-shrink: 0;">👉</span>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div id="player4Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s;">
+                            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                                <input type="radio" name="dealer" value="team2Player2" onchange="selectDealer('team2Player2')" style="width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;">
+                                <input type="text" class="player-input" id="team2Player2" placeholder="P4" style="flex: 1; background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; min-width: 0;">
+                            </div>
+                            <div style="display: flex; justify-content: center; gap: 6px; min-height: 20px; align-items: center;">
+                                <span id="dealer4Icon" style="display: none; font-size: 14px;">🎴</span>
+                                <span id="bidder4Icon" style="display: none; background: #f59e0b; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 12px; font-weight: 700;">👉</span>
+                            </div>
+                        </div>
+                        <div id="player4Bid" style="background: rgba(26,26,26,0.15); border: 1px solid rgba(26,26,26,0.3); border-radius: 4px; padding: 4px; text-align: center; font-size: 11px; font-weight: 700; color: #1a1a1a; min-height: 24px; display: none;">-</div>
                     </div>
                 </div>
             </div>
 
-            <div class="card" style="padding: clamp(15px, 3vw, 20px);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                    <h3 style="margin: 0; font-size: clamp(16px, 3vw, 18px); color: #374151;">🎯 Bidding Phase</h3>
+            <div class="card" style="padding: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+                    <h3 style="margin: 0; font-size: 15px; color: var(--text-secondary); font-weight: 700;">🎯 Bidding</h3>
                     
                     <!-- Pass/Misere buttons horizontal -->
-                    <div id="misereBoxes" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button onclick="selectBid('Pass')" class="btn-secondary" id="passBtn" style="padding: 10px 20px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 6px; font-size: clamp(14px, 2.5vw, 16px); font-weight: 700; cursor: pointer; min-height: 44px; white-space: nowrap;">
+                    <div id="misereBoxes" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                        <button onclick="selectBid('Pass')" class="btn-secondary" id="passBtn" style="padding: 8px 16px; background: var(--bg-card); color: var(--text-secondary); border: 2px solid var(--border-color); border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
                             Pass
                         </button>
-                        <button id="misereBtn" onclick="selectBid('Misère')" style="padding: 10px 16px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 700; cursor: pointer; min-height: 44px; white-space: nowrap;">
-                            Misère <span style="font-size: clamp(11px, 2vw, 12px); font-weight: 500;">(250)</span>
+                        <button id="misereBtn" onclick="selectBid('Misère')" style="padding: 8px 14px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
+                            Misère <span style="font-size: 11px; font-weight: 500;">(250)</span>
                         </button>
-                        <button id="openMisereBtn" onclick="selectBid('Open Misère')" style="padding: 10px 16px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 700; cursor: pointer; min-height: 44px; white-space: nowrap;">
-                            Open Misère <span style="font-size: clamp(11px, 2vw, 12px); font-weight: 500;">(500)</span>
+                        <button id="openMisereBtn" onclick="selectBid('Open Misère')" style="padding: 8px 14px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
+                            Open Misère <span style="font-size: 11px; font-weight: 500;">(500)</span>
                         </button>
                     </div>
                 </div>
                 
                 <div id="biddingPhaseSection">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: clamp(14px, 2.5vw, 16px);">Select a bid:</label>
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: var(--text-secondary); font-size: 13px;">Select a bid:</label>
                         <div class="table-container">
-                            <table style="width: 100%; min-width: 400px; border-collapse: collapse; border: 2px solid #e5e7eb;">
+                            <table style="width: 100%; min-width: 400px; border-collapse: collapse; border: 2px solid var(--border-color);">
                                 <thead>
                                     <tr style="background: #f9fafb;">
                                         <th style="padding: clamp(10px, 2vw, 12px); border: 1px solid #e5e7eb; text-align: center;">♠</th>
@@ -649,15 +680,15 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.1.0";
+        const APP_VERSION = "3.3.0";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ NEW: Compact nested player layout",
-            "✅ Players now inside team boxes (mobile-first design)",
-            "✅ Uniform info boxes at top (2-column grid)",
-            "✅ Better readability with larger fonts",
-            "✅ Misère/Open Misère always visible",
-            "✅ Teal accent color throughout"
+            "✅ NEW: Each player's bid shows below their box",
+            "✅ NEW: Dark text on teal background (better contrast)",
+            "✅ Player inputs now dark text on Team 2",
+            "✅ Live bid tracking during bidding phase",
+            "✅ Bids clear when hand completes",
+            "✅ Much easier to see who bid what!"
         ];
         
         function showVersion() {
@@ -1138,6 +1169,35 @@
             } else {
                 bidHistoryInlineList.innerHTML = 'No bids yet';
             }
+            
+            // Update individual player bid displays
+            const playerBidMap = {
+                'team1Player1': 'player1Bid',
+                'team1Player2': 'player3Bid',
+                'team2Player1': 'player2Bid',
+                'team2Player2': 'player4Bid'
+            };
+            
+            // Clear all bid displays first
+            Object.values(playerBidMap).forEach(bidId => {
+                const bidEl = document.getElementById(bidId);
+                if (bidEl) {
+                    bidEl.style.display = 'none';
+                    bidEl.textContent = '-';
+                }
+            });
+            
+            // Show bids for players who have bid
+            gameState.biddingSequence.forEach(entry => {
+                const bidId = playerBidMap[entry.player];
+                if (bidId) {
+                    const bidEl = document.getElementById(bidId);
+                    if (bidEl) {
+                        bidEl.textContent = entry.bid;
+                        bidEl.style.display = 'block';
+                    }
+                }
+            });
             
             // Update player box highlighting
             updatePlayerBoxHighlighting();
