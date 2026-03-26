@@ -2,16 +2,41 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 2.1.0
+    Version: 3.0.1
     Released: 2025-03-26
+    BYM-style redesign - Dark theme, compact header
+    Misère buttons always visible
     Tap the Hillfred logo to view version info
 -->
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Hillfred's 500 Scorer</title>
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="500 Scorer">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a0a0a'/><g transform='translate(90,90)'><g transform='rotate(45)'><rect x='-36' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-36' width='24' height='24' fill='%2300d4aa' rx='2'/><rect x='24' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='24' width='24' height='24' fill='%2300d4aa' rx='2'/></g></g></svg>">
+    
     <style>
         :root {
+            /* BYM-style dark theme as default */
+            --teal: #00d4aa;
+            --teal-light: #00e8bb;
+            --red: #e05252;
+            --gold: #c9a961;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #141414;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #2a2a2a;
+            --border-light: #333333;
+        }
+        
+        body.light-mode {
             --bg-primary: #f3f4f6;
             --bg-secondary: #ffffff;
             --bg-card: #fafafa;
@@ -21,29 +46,93 @@
             --border-light: #d1d5db;
         }
         
-        body.dark-mode {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --text-primary: #ffffff;
-            --text-secondary: #f1f5f9;
-            --border-color: #334155;
-            --border-light: #475569;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: var(--bg-primary); 
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent; 
+            transition: background-color 0.3s ease;
+            color: var(--text-primary);
+            /* Safe area insets for iPhone notch and status bar */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+        input, select, textarea { user-select: text; }
+        
+        /* BYM-style compact header */
+        .app-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 12px;
+            padding-top: calc(8px + env(safe-area-inset-top));
+            margin-bottom: 0;
         }
         
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg-primary); user-select: none; -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease; }
-        input, select, textarea { user-select: text; }
-        .container { max-width: 1200px; margin: 0 auto; padding: clamp(10px, 3vw, 20px); }
-        .header { background: var(--bg-card); padding: clamp(20px, 5vw, 30px); border-radius: 12px; margin-bottom: clamp(15px, 4vw, 30px); border: 2px solid var(--border-color); transition: background-color 0.3s ease, border-color 0.3s ease; }
-        .header h2 { margin: 0; font-size: clamp(18px, 4vw, 24px); color: var(--text-primary); font-weight: 600; text-align: center; }
-        .logo-clickable { transition: opacity 0.2s, transform 0.2s; }
-        .logo-clickable:hover { opacity: 0.8; transform: scale(1.02); }
-        .logo-clickable:active { transform: scale(0.98); }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
         
-        /* Dark mode logo adjustments */
-        body.dark-mode .logo-clickable .logo-black { fill: #ffffff !important; }
-        body.dark-mode .logo-clickable .logo-text { fill: #ffffff !important; }
+        .header-logo {
+            flex: 1;
+            cursor: pointer;
+        }
+        
+        .header-logo svg {
+            height: 26px;
+            width: auto;
+            display: block;
+            transition: opacity 0.2s;
+        }
+        
+        .header-logo:active svg {
+            opacity: 0.7;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0,212,170,0.08);
+            border: 1px solid rgba(0,212,170,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s;
+            color: var(--teal);
+        }
+        
+        .icon-btn:active {
+            transform: scale(0.92);
+            background: rgba(0,212,170,0.18);
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: clamp(10px, 3vw, 20px);
+            /* Additional padding for safe areas on top of base padding */
+            padding-top: max(clamp(10px, 3vw, 20px), env(safe-area-inset-top));
+        }
+        
+        /* Logo color adjustments for light mode */
+        body.light-mode .logo-white { fill: #1a1a1a !important; }
+        body.light-mode .logo-text { fill: #1a1a1a !important; }
+        
         .view-selector { background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 12px; padding: clamp(15px, 3vw, 20px); margin-bottom: clamp(15px, 4vw, 30px); transition: background-color 0.3s ease, border-color 0.3s ease; }
         .view-selector-inner { display: flex; flex-direction: row; gap: clamp(15px, 3vw, 20px); align-items: center; flex-wrap: wrap; }
         @media (max-width: 600px) { .view-selector-inner { flex-direction: column; align-items: flex-start; } }
@@ -258,44 +347,38 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" class="logo-clickable" style="width: clamp(280px, 60vw, 400px); height: auto; display: block; margin: 0 auto; cursor: pointer;" onclick="showVersion()">
-              <g transform="translate(50, 60)">
-                <g transform="rotate(45 28 28)">
-                  <rect class="logo-black" x="0" y="0" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect x="20" y="0" width="16" height="16" fill="#00d4aa" rx="1"/>
-                  <rect class="logo-black" x="40" y="0" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect class="logo-black" x="0" y="20" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect class="logo-black" x="20" y="20" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect class="logo-black" x="40" y="20" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect class="logo-black" x="0" y="40" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect class="logo-black" x="20" y="40" width="16" height="16" fill="#1a1a1a" rx="1"/>
-                  <rect x="40" y="40" width="16" height="16" fill="#00d4aa" rx="1"/>
-                </g>
-              </g>
-              <text class="logo-text" x="130" y="70" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#1a1a1a">Hillfred</text>
-              <rect x="130" y="76" width="80" height="1" fill="#00d4aa"/>
-            </svg>
-            <h2 style="margin: 15px 0 0 0; font-size: clamp(18px, 4vw, 24px); font-weight: 600; text-align: center;">500 Scorer</h2>
-        </div>
-
-        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; justify-content: space-between; align-items: center;">
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <button id="newGameBtn" onclick="newGame()" style="padding: 10px 16px; background: #ef4444; color: white; border: 2px solid #ef4444; border-radius: 8px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; transition: all 0.2s;">
-                    New Game
-                </button>
-                <button id="recentBidsBtn" onclick="showView('recentBids')" style="padding: 10px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; transition: all 0.2s;">
-                    Recent Bids
-                </button>
-                <button id="playerStatsBtn" onclick="showView('playerStats')" style="padding: 10px 16px; background: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: clamp(13px, 2.5vw, 14px); font-weight: 600; cursor: pointer; transition: all 0.2s;">
-                    Player Stats
-                </button>
+    <!-- BYM-style compact header -->
+    <header class="app-header">
+        <div class="header-inner">
+            <div class="header-logo" onclick="showVersion()">
+                <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(50, 60)">
+                        <g transform="rotate(45 28 28)">
+                            <rect class="logo-white" x="0" y="0" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect x="20" y="0" width="16" height="16" fill="#00d4aa" rx="1"/>
+                            <rect class="logo-white" x="40" y="0" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect class="logo-white" x="0" y="20" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect class="logo-white" x="20" y="20" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect class="logo-white" x="40" y="20" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect class="logo-white" x="0" y="40" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect class="logo-white" x="20" y="40" width="16" height="16" fill="#ffffff" rx="1"/>
+                            <rect x="40" y="40" width="16" height="16" fill="#00d4aa" rx="1"/>
+                        </g>
+                    </g>
+                    <text class="logo-text" x="130" y="70" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#ffffff">Hillfred</text>
+                    <rect x="130" y="76" width="80" height="1" fill="#00d4aa"/>
+                </svg>
             </div>
-            <button id="darkModeBtn" onclick="toggleDarkMode()" style="padding: 10px 16px; background: #1a1a1a; color: white; border: 2px solid #1a1a1a; border-radius: 8px; font-size: clamp(20px, 4vw, 24px); cursor: pointer; transition: all 0.2s; line-height: 1;">
-                🌙
-            </button>
+            <div class="header-actions">
+                <div class="icon-btn" id="lightModeBtn" onclick="toggleLightMode()" title="Light Mode">☀️</div>
+                <div class="icon-btn" onclick="showView('recentBids')" title="Recent Bids">📊</div>
+                <div class="icon-btn" onclick="showView('playerStats')" title="Player Stats">📈</div>
+                <div class="icon-btn" onclick="newGame()" title="New Game">🔄</div>
+            </div>
         </div>
+    </header>
+
+    <div class="container">
 
         <!-- Current Bidder and Bid History Display -->
         <div id="biddingInfoContainer" style="display: none; margin-bottom: 15px; padding: 12px; background: #fafafa; border-radius: 8px; border: 2px solid #e5e7eb;">
@@ -571,15 +654,15 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "2.1.0";
+        const APP_VERSION = "3.0.1";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ Added: Dark Mode toggle (moon button) - no grey text!",
-            "✅ Fixed: Must win via successful bid reaching 500+ (critical bug fix)",
-            "✅ Added: Undo Last Hand feature",
-            "✅ Added: Visual progress bars to 500/-500",
-            "✅ Fixed: Pass/Misère buttons now horizontal on mobile",
-            "✅ Improved: Player box visibility with badged icons"
+            "✅ NEW: Misère/Open Misère always visible (validation lock prevents invalid bids)",
+            "✅ NEW: BYM-style dark theme as default",
+            "✅ NEW: Compact header with icon buttons",
+            "✅ NEW: Teal accent color (#00d4aa)",
+            "✅ Light/Dark mode toggle (tap sun icon)",
+            "✅ Fixed: Must win via successful bid reaching 500+"
         ];
         
         function showVersion() {
@@ -1114,27 +1197,22 @@
                 html += '<tr>';
                 
                 const suits = [
-                    { icon: '♠', name: 'SPADES', color: '#374151' },
-                    { icon: '♣', name: 'CLUBS', color: '#374151' },
+                    { icon: '♠', name: 'SPADES', color: 'var(--text-secondary)' },
+                    { icon: '♣', name: 'CLUBS', color: 'var(--text-secondary)' },
                     { icon: '♦', name: 'DIAMONDS', color: '#ef4444' },
                     { icon: '♥', name: 'HEARTS', color: '#ef4444' },
-                    { icon: 'NT', name: 'NOTRUMPS', color: '#374151' }
+                    { icon: 'NT', name: 'NOTRUMPS', color: 'var(--text-secondary)' }
                 ];
                 
                 suits.forEach((suit, index) => {
-                    // Regular suit bid
+                    // Regular suit bid - always visible, validation prevents invalid clicks
                     const bidStr = `${tricks}${suit.icon}`;
                     const scoreValue = SCORING_TABLE[tricks][suit.name];
-                    const isValid = isValidBid(bidStr);
-                    const bgColor = isValid ? 'white' : '#f3f4f6';
-                    const textColor = isValid ? suit.color : '#d1d5db';
-                    const cursor = isValid ? 'pointer' : 'not-allowed';
-                    const opacity = isValid ? '1' : '0.5';
                     
                     html += `
-                        <td class="bidding-table-cell" onclick="${isValid ? `selectBid('${bidStr}', ${tricks}, '${suit.name}')` : ''}" 
-                            style="padding: clamp(14px, 3vw, 16px); border: 1px solid #e5e7eb; text-align: center; cursor: ${cursor}; background: ${bgColor}; font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: ${textColor}; opacity: ${opacity};"
-                            ${isValid ? `onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'"` : ''}>
+                        <td class="bidding-table-cell" onclick="selectBid('${bidStr}', ${tricks}, '${suit.name}')" 
+                            style="padding: clamp(14px, 3vw, 16px); border: 1px solid var(--border-color); text-align: center; cursor: pointer; background: var(--bg-secondary); font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: ${suit.color}; transition: background 0.2s;"
+                            onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background='var(--bg-secondary)'">
                             ${bidStr}<br><span style="font-size: clamp(11px, 2vw, 12px); font-weight: 500;">(${scoreValue})</span>
                         </td>
                     `;
@@ -1144,14 +1222,12 @@
             }
             document.getElementById('biddingTableBody').innerHTML = html;
             
-            // Update Misère buttons
+            // Update Misère buttons visibility
             updateMisereButtons();
         }
 
         function updateMisereButtons() {
             const misereBoxes = document.getElementById('misereBoxes');
-            const misereBtn = document.getElementById('misereBtn');
-            const openMisereBtn = document.getElementById('openMisereBtn');
             
             if (!gameState.misereEnabled) {
                 misereBoxes.style.display = 'none';
@@ -1160,53 +1236,46 @@
             
             misereBoxes.style.display = 'flex';
             
-            // Update Misère button
-            const misereValid = isValidBid('Misère');
-            misereBtn.style.background = misereValid ? '#fef3c7' : '#f3f4f6';
-            misereBtn.style.color = misereValid ? '#92400e' : '#d1d5db';
-            misereBtn.style.cursor = misereValid ? 'pointer' : 'not-allowed';
-            misereBtn.style.opacity = misereValid ? '1' : '0.5';
-            misereBtn.disabled = !misereValid;
-            
-            // Update Open Misère button
-            const openMisereValid = isValidBid('Open Misère');
-            openMisereBtn.style.background = openMisereValid ? '#fef3c7' : '#f3f4f6';
-            openMisereBtn.style.color = openMisereValid ? '#92400e' : '#d1d5db';
-            openMisereBtn.style.cursor = openMisereValid ? 'pointer' : 'not-allowed';
-            openMisereBtn.style.opacity = openMisereValid ? '1' : '0.5';
-            openMisereBtn.disabled = !openMisereValid;
+            // Buttons always look active - validation prevents invalid bids
+            // No visual state changes needed - the lock in selectBid() prevents invalid use
         }
 
-        function toggleDarkMode() {
+        function toggleLightMode() {
             const body = document.body;
-            const btn = document.getElementById('darkModeBtn');
+            const btn = document.getElementById('lightModeBtn');
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
             
-            if (body.classList.contains('dark-mode')) {
-                body.classList.remove('dark-mode');
-                btn.textContent = '🌙';
-                localStorage.setItem('darkMode', 'false');
-            } else {
-                body.classList.add('dark-mode');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
                 btn.textContent = '☀️';
-                localStorage.setItem('darkMode', 'true');
+                if (themeColorMeta) themeColorMeta.setAttribute('content', '#0a0a0a');
+                localStorage.setItem('lightMode', 'false');
+            } else {
+                body.classList.add('light-mode');
+                btn.textContent = '🌙';
+                if (themeColorMeta) themeColorMeta.setAttribute('content', '#fafafa');
+                localStorage.setItem('lightMode', 'true');
             }
         }
 
-        function loadDarkModePreference() {
-            const darkMode = localStorage.getItem('darkMode');
-            const btn = document.getElementById('darkModeBtn');
+        function loadLightModePreference() {
+            const lightMode = localStorage.getItem('lightMode');
+            const btn = document.getElementById('lightModeBtn');
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
             
-            if (darkMode === 'true') {
-                document.body.classList.add('dark-mode');
-                btn.textContent = '☀️';
-            } else {
+            if (lightMode === 'true') {
+                document.body.classList.add('light-mode');
                 btn.textContent = '🌙';
+                if (themeColorMeta) themeColorMeta.setAttribute('content', '#fafafa');
+            } else {
+                btn.textContent = '☀️';
+                if (themeColorMeta) themeColorMeta.setAttribute('content', '#0a0a0a');
             }
         }
 
         function init() {
             try {
-                loadDarkModePreference();
+                loadLightModePreference();
                 checkRecovery();
                 createBiddingPhaseTable();
                 createTricksGrid();
@@ -1679,32 +1748,15 @@
             document.getElementById('historyTab').classList.add('hidden');
             document.getElementById('statsTab').classList.add('hidden');
             
-            // Reset ALL buttons to gray
-            const allButtons = ['recentBidsBtn', 'playerStatsBtn'];
-            allButtons.forEach(btnId => {
-                const btn = document.getElementById(btnId);
-                if (btn) {
-                    btn.style.background = '#f3f4f6';
-                    btn.style.color = '#374151';
-                    btn.style.borderColor = '#d1d5db';
-                }
-            });
-            
-            // Show appropriate tab and highlight button
+            // Show appropriate tab
             if (tab === 'game') {
                 document.getElementById('gameTab').classList.remove('hidden');
             } else if (tab === 'recentBids') {
                 document.getElementById('recentBidsTab').classList.remove('hidden');
                 loadRecentBids();
-                document.getElementById('recentBidsBtn').style.background = '#1a1a1a';
-                document.getElementById('recentBidsBtn').style.color = 'white';
-                document.getElementById('recentBidsBtn').style.borderColor = '#1a1a1a';
             } else if (tab === 'playerStats') {
                 document.getElementById('playerStatsTab').classList.remove('hidden');
                 loadPlayerStats();
-                document.getElementById('playerStatsBtn').style.background = '#1a1a1a';
-                document.getElementById('playerStatsBtn').style.color = 'white';
-                document.getElementById('playerStatsBtn').style.borderColor = '#1a1a1a';
             }
         }
 
