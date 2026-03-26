@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.7.0
+    Version: 3.7.2
     Released: 2025-03-26
-    Poker-style dealer button (white D)
+    Fixed Team 2 bid displays (white on teal)
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -459,7 +459,7 @@
                             <input type="text" class="player-input" id="team2Player1" placeholder="P2" style="background: transparent; border: none; padding: 2px; padding-right: 32px; color: #1a1a1a; font-size: 13px; font-weight: 600; width: 100%;">
                             <div id="dealer2Icon" style="display: none; position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">D</div>
                         </div>
-                        <div id="player2Bid" style="background: rgba(26,26,26,0.2); border: 1px solid rgba(26,26,26,0.4); border-radius: 4px; padding: 6px 3px; text-align: center; font-size: 13px; font-weight: 700; color: #1a1a1a; min-height: 32px; display: none; line-height: 1.2;">-</div>
+                        <div id="player2Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 6px 3px; text-align: center; font-size: 13px; font-weight: 700; color: #1a1a1a; min-height: 32px; display: none; line-height: 1.2;">-</div>
                     </div>
                     
                     <!-- Player 4 -->
@@ -468,7 +468,7 @@
                             <input type="text" class="player-input" id="team2Player2" placeholder="P4" style="background: transparent; border: none; padding: 2px; padding-right: 32px; color: #1a1a1a; font-size: 13px; font-weight: 600; width: 100%;">
                             <div id="dealer4Icon" style="display: none; position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">D</div>
                         </div>
-                        <div id="player4Bid" style="background: rgba(26,26,26,0.2); border: 1px solid rgba(26,26,26,0.4); border-radius: 4px; padding: 6px 3px; text-align: center; font-size: 13px; font-weight: 700; color: #1a1a1a; min-height: 32px; display: none; line-height: 1.2;">-</div>
+                        <div id="player4Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 6px 3px; text-align: center; font-size: 13px; font-weight: 700; color: #1a1a1a; min-height: 32px; display: none; line-height: 1.2;">-</div>
                     </div>
                 </div>
             </div>
@@ -661,14 +661,13 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.7.0";
+        const APP_VERSION = "3.7.2";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ NEW: Poker-style dealer button (white circle with D)",
-            "✅ Removed radio buttons - auto-rotation only",
-            "✅ Removed 🎴 icon - cleaner look",
-            "✅ White Pass button for visibility",
-            "✅ All 3 buttons on one line",
+            "✅ FIX: Team 2 bid displays now visible (white bg on teal)",
+            "✅ White glow for Team 2 current bidder",
+            "✅ Orange glow for Team 1 current bidder",
+            "✅ Poker-style dealer button",
             "✅ Game Over action buttons"
         ];
         
@@ -809,18 +808,27 @@
                 const box = document.getElementById(boxes[index]);
                 const icon = document.getElementById(bidderIcons[index]);
                 const isCurrentBidder = gameState.currentBidder === player;
+                const isTeam1 = player.startsWith('team1');
                 
                 if (box) {
                     if (isCurrentBidder) {
-                        // Prominent highlight for current bidder
-                        box.style.border = '3px solid #f59e0b';
-                        box.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.3), 0 0 12px rgba(245,158,11,0.5)';
-                        box.style.background = 'rgba(245,158,11,0.15)';
+                        // Different highlight colors for Team 1 (black) vs Team 2 (teal)
+                        if (isTeam1) {
+                            // Orange highlight for Team 1 (black background)
+                            box.style.border = '3px solid #f59e0b';
+                            box.style.boxShadow = '0 0 0 2px rgba(245,158,11,0.3), 0 0 12px rgba(245,158,11,0.5)';
+                            box.style.background = 'rgba(245,158,11,0.15)';
+                        } else {
+                            // White highlight for Team 2 (teal background) - stands out better
+                            box.style.border = '3px solid #ffffff';
+                            box.style.boxShadow = '0 0 0 2px rgba(255,255,255,0.4), 0 0 12px rgba(255,255,255,0.6)';
+                            box.style.background = 'rgba(255,255,255,0.2)';
+                        }
                     } else {
                         box.style.border = '2px solid transparent';
                         box.style.boxShadow = 'none';
                         // Reset background based on team
-                        if (player.startsWith('team1')) {
+                        if (isTeam1) {
                             box.style.background = 'rgba(255,255,255,0.08)';
                         } else {
                             box.style.background = 'rgba(0,0,0,0.08)';
