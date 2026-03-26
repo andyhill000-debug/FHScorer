@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.7.3
+    Version: 3.8.0
     Released: 2025-03-26
-    Team 2 progress bar WHITE (visible!)
+    Full brand guidelines compliance
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -17,7 +17,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="500 Scorer">
     <meta name="theme-color" content="#0a0a0a">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a0a0a'/><g transform='translate(90,90)'><g transform='rotate(45)'><rect x='-36' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-36' width='24' height='24' fill='%2300d4aa' rx='2'/><rect x='24' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='24' width='24' height='24' fill='%2300d4aa' rx='2'/></g></g></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a0a0a'/><g transform='translate(90,90)'><g transform='rotate(45)'><rect x='-36' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-36' width='24' height='24' fill='%2300d4aa' rx='2'/><rect x='24' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='24' width='24' height='24' fill='%23c9a961' rx='2'/></g></g></svg>">
     
     <style>
         :root {
@@ -36,7 +39,7 @@
         }
         
         body.light-mode {
-            --bg-primary: #f3f4f6;
+            --bg-primary: #fafafa;
             --bg-secondary: #ffffff;
             --bg-card: #fafafa;
             --text-primary: #1a1a1a;
@@ -47,7 +50,7 @@
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            font-family: system-ui, -apple-system, sans-serif; 
+            font-family: 'DM Sans', Arial, sans-serif; 
             background: var(--bg-primary); 
             user-select: none; 
             -webkit-tap-highlight-color: transparent; 
@@ -364,10 +367,10 @@
                             <rect class="logo-white" x="40" y="20" width="16" height="16" fill="#ffffff" rx="1"/>
                             <rect class="logo-white" x="0" y="40" width="16" height="16" fill="#ffffff" rx="1"/>
                             <rect class="logo-white" x="20" y="40" width="16" height="16" fill="#ffffff" rx="1"/>
-                            <rect x="40" y="40" width="16" height="16" fill="#00d4aa" rx="1"/>
+                            <rect x="40" y="40" width="16" height="16" fill="#c9a961" rx="1"/>
                         </g>
                     </g>
-                    <text class="logo-text" x="130" y="70" font-family="Georgia, serif" font-size="48" font-weight="700" fill="#ffffff">Hillfred</text>
+                    <text class="logo-text" x="130" y="70" font-family="'Playfair Display', Georgia, serif" font-size="48" font-weight="700" fill="#ffffff">Hillfred</text>
                     <rect x="130" y="76" width="80" height="1" fill="#00d4aa"/>
                 </svg>
             </div>
@@ -661,14 +664,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.7.3";
+        const APP_VERSION = "3.8.0";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ FIX: Team 2 progress bar now WHITE (visible on teal!)",
-            "✅ FIX: Team 2 bid displays WHITE (visible on teal)",
-            "✅ Orange/white current bidder glow",
-            "✅ Poker-style dealer button",
-            "✅ Game Over action buttons"
+            "✅ BRAND: Logo grid now uses GOLD (#c9a961) bottom-right",
+            "✅ BRAND: Playfair Display font for wordmark",
+            "✅ BRAND: DM Sans font for body text",
+            "✅ BRAND: Correct light mode background (#fafafa)",
+            "✅ Full brand guidelines compliance"
         ];
         
         function showVersion() {
