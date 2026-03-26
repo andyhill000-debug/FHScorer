@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.8.2
+    Version: 3.8.3
     Released: 2025-03-26
-    Fixed: Reopen Bidding bug
+    Misère: 230, Open Misère: 450
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -486,10 +486,10 @@
                             Pass
                         </button>
                         <button id="misereBtn" onclick="selectBid('Misère')" style="padding: 8px 10px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
-                            Misère <span style="font-size: 10px; font-weight: 500;">(250)</span>
+                            Misère <span style="font-size: 10px; font-weight: 500;">(230)</span>
                         </button>
                         <button id="openMisereBtn" onclick="selectBid('Open Misère')" style="padding: 8px 8px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
-                            Open Misère <span style="font-size: 10px; font-weight: 500;">(500)</span>
+                            Open Misère <span style="font-size: 10px; font-weight: 500;">(450)</span>
                         </button>
                     </div>
                 </div>
@@ -664,14 +664,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.8.2";
+        const APP_VERSION = "3.8.3";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ FIX: Reopen Bidding now clears passed players",
+            "✅ SCORING: Misère now 230 (was 250)",
+            "✅ SCORING: Open Misère now 450 (was 500)",
+            "✅ FIX: Reopen Bidding clears passed players",
             "✅ NEW: Bid displays 50% larger (20px font)",
-            "✅ BRAND: Full brand guidelines compliance",
-            "✅ Team 2 white progress bar (visible!)",
-            "✅ Poker dealer button & team-specific glow"
+            "✅ BRAND: Full brand guidelines compliance"
         ];
         
         function showVersion() {
@@ -680,7 +680,7 @@
         }
         
         const SCORING_TABLE = {
-            6: { SPADES: 40, CLUBS: 60, DIAMONDS: 80, HEARTS: 100, NOTRUMPS: 120, MISERE: 250 },
+            6: { SPADES: 40, CLUBS: 60, DIAMONDS: 80, HEARTS: 100, NOTRUMPS: 120, MISERE: 230 },
             7: { SPADES: 140, CLUBS: 160, DIAMONDS: 180, HEARTS: 200, NOTRUMPS: 220 },
             8: { SPADES: 240, CLUBS: 260, DIAMONDS: 280, HEARTS: 300, NOTRUMPS: 320 },
             9: { SPADES: 340, CLUBS: 360, DIAMONDS: 380, HEARTS: 400, NOTRUMPS: 420 },
@@ -693,8 +693,8 @@
 
         function parseBidString(bidStr) {
             if (bidStr === 'Pass') return { type: 'pass', value: 0 };
-            if (bidStr === 'Misère') return { type: 'misere', value: 250 };
-            if (bidStr === 'Open Misère') return { type: 'openmisere', value: 500 };
+            if (bidStr === 'Misère') return { type: 'misere', value: 230 };
+            if (bidStr === 'Open Misère') return { type: 'openmisere', value: 450 };
             
             const match = bidStr.match(/(\d+)(♠|♣|♦|♥|NT)/);
             if (match) {
@@ -1369,9 +1369,9 @@
             let opponentPoints = 0;
 
             if (gameState.isOpenMisere) {
-                contractorPoints = gameState.actualTricks === 0 ? 500 : -500;
+                contractorPoints = gameState.actualTricks === 0 ? 450 : -450;
             } else if (gameState.isMisere) {
-                contractorPoints = gameState.actualTricks === 0 ? 250 : -250;
+                contractorPoints = gameState.actualTricks === 0 ? 230 : -230;
             } else {
                 const bidValue = SCORING_TABLE[gameState.bidTricks][gameState.bidSuit];
                 if (gameState.actualTricks >= gameState.bidTricks) {
