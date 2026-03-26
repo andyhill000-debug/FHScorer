@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.8.1
+    Version: 3.8.2
     Released: 2025-03-26
-    50% larger bid displays (20px font)
+    Fixed: Reopen Bidding bug
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -664,14 +664,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.8.1";
+        const APP_VERSION = "3.8.2";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ NEW: Bid displays 50% LARGER (20px font, 48px height)",
-            "✅ BRAND: Logo grid uses GOLD (#c9a961)",
-            "✅ BRAND: Playfair Display + DM Sans fonts",
-            "✅ Team 2 progress bar WHITE (visible!)",
-            "✅ Full brand guidelines compliance"
+            "✅ FIX: Reopen Bidding now clears passed players",
+            "✅ NEW: Bid displays 50% larger (20px font)",
+            "✅ BRAND: Full brand guidelines compliance",
+            "✅ Team 2 white progress bar (visible!)",
+            "✅ Poker dealer button & team-specific glow"
         ];
         
         function showVersion() {
@@ -1145,6 +1145,7 @@
 
         function reopenBidding() {
             gameState.biddingPhase = true;
+            gameState.passedPlayers = []; // Clear passed players so everyone can bid again
             updateDisplay();
             createBiddingPhaseTable(); // Refresh the table
         }
