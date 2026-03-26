@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.7.2
+    Version: 3.7.3
     Released: 2025-03-26
-    Fixed Team 2 bid displays (white on teal)
+    Team 2 progress bar WHITE (visible!)
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -446,7 +446,7 @@
                         <div id="team2ProgressLeft" style="background: #ef4444; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
                     </div>
                     <div style="position: absolute; left: 50%; right: 0; height: 100%;">
-                        <div id="team2ProgressRight" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                        <div id="team2ProgressRight" style="background: #ffffff; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
                     </div>
                     <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.4);"></div>
                 </div>
@@ -661,12 +661,12 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.7.2";
+        const APP_VERSION = "3.7.3";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ FIX: Team 2 bid displays now visible (white bg on teal)",
-            "✅ White glow for Team 2 current bidder",
-            "✅ Orange glow for Team 1 current bidder",
+            "✅ FIX: Team 2 progress bar now WHITE (visible on teal!)",
+            "✅ FIX: Team 2 bid displays WHITE (visible on teal)",
+            "✅ Orange/white current bidder glow",
             "✅ Poker-style dealer button",
             "✅ Game Over action buttons"
         ];
