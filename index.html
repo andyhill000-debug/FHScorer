@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.8.3
+    Version: 3.9.0
     Released: 2025-03-26
-    Misère: 230, Open Misère: 450
+    Side-by-side teams, inline dealer button
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -388,92 +388,91 @@
         <!-- Info boxes removed - visual highlighting on player boxes shows current bidder -->
 
         <div id="gameTab">
-            <!-- TEAM 1 - Players side by side -->
-            <div style="background: #1a1a1a; border-radius: 10px; padding: 10px; margin-bottom: 10px; border: 2px solid var(--border-color);">
-                <!-- Team header with score -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <input type="text" class="team-input" id="team1Name" value="Team 1" style="background: rgba(255,255,255,0.15); border: none; padding: 5px 8px; border-radius: 4px; color: white; font-size: 14px; font-weight: 700; width: auto; max-width: 45%;">
-                    <div style="text-align: right;">
-                        <div style="font-size: 28px; font-weight: 700; color: white; line-height: 1;" id="team1Score">0</div>
-                        <div style="font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 2px;" id="team1ProgressText">0/500</div>
-                    </div>
-                </div>
+            <!-- Teams side by side in 2 columns -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                 
-                <!-- Progress bar - zero in middle -->
-                <div style="background: rgba(255,255,255,0.15); height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 8px; position: relative;">
-                    <div style="position: absolute; left: 0; right: 50%; height: 100%; display: flex; justify-content: flex-end;">
-                        <div id="team1ProgressLeft" style="background: #ef4444; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
-                    </div>
-                    <div style="position: absolute; left: 50%; right: 0; height: 100%;">
-                        <div id="team1ProgressRight" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
-                    </div>
-                    <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.4);"></div>
-                </div>
-                
-                <!-- Players - side by side -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <!-- Player 1 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px;">
-                        <div id="player1Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s; position: relative;">
-                            <input type="text" class="player-input" id="team1Player1" placeholder="P1" style="background: transparent; border: none; padding: 2px; padding-right: 32px; color: white; font-size: 13px; font-weight: 600; width: 100%;">
-                            <div id="dealer1Icon" style="display: none; position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">D</div>
+                <!-- TEAM 1 COLUMN -->
+                <div style="background: #1a1a1a; border-radius: 10px; padding: 10px; border: 2px solid var(--border-color);">
+                    <!-- Team header with score -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <input type="text" class="team-input" id="team1Name" value="Team 1" style="background: rgba(255,255,255,0.15); border: none; padding: 4px 6px; border-radius: 4px; color: white; font-size: 13px; font-weight: 700; width: auto; max-width: 60%;">
+                        <div style="text-align: right;">
+                            <div style="font-size: 24px; font-weight: 700; color: white; line-height: 1;" id="team1Score">0</div>
+                            <div style="font-size: 9px; color: rgba(255,255,255,0.6); margin-top: 2px;" id="team1ProgressText">0/500</div>
                         </div>
-                        <div id="player1Bid" style="background: rgba(0,212,170,0.2); border: 1px solid rgba(0,212,170,0.4); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: var(--teal); min-height: 48px; display: none; line-height: 1.2;">-</div>
+                    </div>
+                    
+                    <!-- Progress bar -->
+                    <div style="background: rgba(255,255,255,0.15); height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 6px; position: relative;">
+                        <div style="position: absolute; left: 0; right: 50%; height: 100%; display: flex; justify-content: flex-end;">
+                            <div id="team1ProgressLeft" style="background: #ef4444; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="position: absolute; left: 50%; right: 0; height: 100%;">
+                            <div id="team1ProgressRight" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.4);"></div>
+                    </div>
+                    
+                    <!-- Player 1 -->
+                    <div style="margin-bottom: 6px;">
+                        <div id="player1Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
+                            <input type="text" class="player-input" id="team1Player1" placeholder="P1" style="background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; flex: 1;">
+                            <div id="dealer1Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
+                        </div>
+                        <div id="player1Bid" style="background: rgba(0,212,170,0.2); border: 1px solid rgba(0,212,170,0.4); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: var(--teal); min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
                     
                     <!-- Player 3 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px;">
-                        <div id="player3Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s; position: relative;">
-                            <input type="text" class="player-input" id="team1Player2" placeholder="P3" style="background: transparent; border: none; padding: 2px; padding-right: 32px; color: white; font-size: 13px; font-weight: 600; width: 100%;">
-                            <div id="dealer3Icon" style="display: none; position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">D</div>
+                    <div>
+                        <div id="player3Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
+                            <input type="text" class="player-input" id="team1Player2" placeholder="P3" style="background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; flex: 1;">
+                            <div id="dealer3Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
                         </div>
-                        <div id="player3Bid" style="background: rgba(0,212,170,0.2); border: 1px solid rgba(0,212,170,0.4); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: var(--teal); min-height: 48px; display: none; line-height: 1.2;">-</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- TEAM 2 - Players side by side with dark text -->
-            <div style="background: #00d4aa; border-radius: 10px; padding: 10px; margin-bottom: 10px; border: 2px solid var(--border-color);">
-                <!-- Team header with score -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <input type="text" class="team-input" id="team2Name" value="Team 2" style="background: rgba(0,0,0,0.15); border: none; padding: 5px 8px; border-radius: 4px; color: #1a1a1a; font-size: 14px; font-weight: 700; width: auto; max-width: 45%;">
-                    <div style="text-align: right;">
-                        <div style="font-size: 28px; font-weight: 700; color: #1a1a1a; line-height: 1;" id="team2Score">0</div>
-                        <div style="font-size: 10px; color: rgba(0,0,0,0.6); margin-top: 2px;" id="team2ProgressText">0/500</div>
+                        <div id="player3Bid" style="background: rgba(0,212,170,0.2); border: 1px solid rgba(0,212,170,0.4); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: var(--teal); min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
                 </div>
                 
-                <!-- Progress bar - zero in middle -->
-                <div style="background: rgba(0,0,0,0.15); height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 8px; position: relative;">
-                    <div style="position: absolute; left: 0; right: 50%; height: 100%; display: flex; justify-content: flex-end;">
-                        <div id="team2ProgressLeft" style="background: #ef4444; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                <!-- TEAM 2 COLUMN -->
+                <div style="background: #00d4aa; border-radius: 10px; padding: 10px; border: 2px solid var(--border-color);">
+                    <!-- Team header with score -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <input type="text" class="team-input" id="team2Name" value="Team 2" style="background: rgba(0,0,0,0.15); border: none; padding: 4px 6px; border-radius: 4px; color: #1a1a1a; font-size: 13px; font-weight: 700; width: auto; max-width: 60%;">
+                        <div style="text-align: right;">
+                            <div style="font-size: 24px; font-weight: 700; color: #1a1a1a; line-height: 1;" id="team2Score">0</div>
+                            <div style="font-size: 9px; color: rgba(0,0,0,0.6); margin-top: 2px;" id="team2ProgressText">0/500</div>
+                        </div>
                     </div>
-                    <div style="position: absolute; left: 50%; right: 0; height: 100%;">
-                        <div id="team2ProgressRight" style="background: #ffffff; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                    
+                    <!-- Progress bar -->
+                    <div style="background: rgba(0,0,0,0.15); height: 4px; border-radius: 2px; overflow: hidden; margin-bottom: 6px; position: relative;">
+                        <div style="position: absolute; left: 0; right: 50%; height: 100%; display: flex; justify-content: flex-end;">
+                            <div id="team2ProgressLeft" style="background: #ef4444; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="position: absolute; left: 50%; right: 0; height: 100%;">
+                            <div id="team2ProgressRight" style="background: #ffffff; height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.4);"></div>
                     </div>
-                    <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(0,0,0,0.4);"></div>
-                </div>
-                
-                <!-- Players - side by side -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    
                     <!-- Player 2 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px;">
-                        <div id="player2Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s; position: relative;">
-                            <input type="text" class="player-input" id="team2Player1" placeholder="P2" style="background: transparent; border: none; padding: 2px; padding-right: 32px; color: #1a1a1a; font-size: 13px; font-weight: 600; width: 100%;">
-                            <div id="dealer2Icon" style="display: none; position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">D</div>
+                    <div style="margin-bottom: 6px;">
+                        <div id="player2Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
+                            <input type="text" class="player-input" id="team2Player1" placeholder="P2" style="background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; flex: 1;">
+                            <div id="dealer2Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
                         </div>
-                        <div id="player2Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: #1a1a1a; min-height: 48px; display: none; line-height: 1.2;">-</div>
+                        <div id="player2Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: #1a1a1a; min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
                     
                     <!-- Player 4 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px;">
-                        <div id="player4Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 6px; border: 2px solid transparent; transition: all 0.2s; position: relative;">
-                            <input type="text" class="player-input" id="team2Player2" placeholder="P4" style="background: transparent; border: none; padding: 2px; padding-right: 32px; color: #1a1a1a; font-size: 13px; font-weight: 600; width: 100%;">
-                            <div id="dealer4Icon" style="display: none; position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">D</div>
+                    <div>
+                        <div id="player4Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
+                            <input type="text" class="player-input" id="team2Player2" placeholder="P4" style="background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; flex: 1;">
+                            <div id="dealer4Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
                         </div>
-                        <div id="player4Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: #1a1a1a; min-height: 48px; display: none; line-height: 1.2;">-</div>
+                        <div id="player4Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: #1a1a1a; min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
                 </div>
+                
             </div>
 
             <div class="card" style="padding: 10px;">
@@ -664,14 +663,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.8.3";
+        const APP_VERSION = "3.9.0";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ SCORING: Misère now 230 (was 250)",
-            "✅ SCORING: Open Misère now 450 (was 500)",
-            "✅ FIX: Reopen Bidding clears passed players",
-            "✅ NEW: Bid displays 50% larger (20px font)",
-            "✅ BRAND: Full brand guidelines compliance"
+            "✅ NEW: Teams side-by-side layout (2 columns)",
+            "✅ NEW: Dealer button inline next to player name",
+            "✅ NEW: Smaller, more compact player boxes",
+            "✅ SCORING: Misère 230, Open Misère 450",
+            "✅ BRAND: Full compliance + 50% larger bids"
         ];
         
         function showVersion() {
