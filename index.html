@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.9.0
+    Version: 3.9.1
     Released: 2025-03-26
-    Side-by-side teams, inline dealer button
+    Fixed dealer button inline positioning
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -417,7 +417,7 @@
                     <div style="margin-bottom: 6px;">
                         <div id="player1Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
                             <input type="text" class="player-input" id="team1Player1" placeholder="P1" style="background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; flex: 1;">
-                            <div id="dealer1Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
+                            <div id="dealer1Icon" style="width: 20px; height: 20px; background: white; border-radius: 50%; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0; display: none;">D</div>
                         </div>
                         <div id="player1Bid" style="background: rgba(0,212,170,0.2); border: 1px solid rgba(0,212,170,0.4); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: var(--teal); min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
@@ -426,7 +426,7 @@
                     <div>
                         <div id="player3Box" style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
                             <input type="text" class="player-input" id="team1Player2" placeholder="P3" style="background: transparent; border: none; padding: 2px; color: white; font-size: 13px; font-weight: 600; flex: 1;">
-                            <div id="dealer3Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
+                            <div id="dealer3Icon" style="width: 20px; height: 20px; background: white; border-radius: 50%; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0; display: none;">D</div>
                         </div>
                         <div id="player3Bid" style="background: rgba(0,212,170,0.2); border: 1px solid rgba(0,212,170,0.4); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: var(--teal); min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
@@ -458,7 +458,7 @@
                     <div style="margin-bottom: 6px;">
                         <div id="player2Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
                             <input type="text" class="player-input" id="team2Player1" placeholder="P2" style="background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; flex: 1;">
-                            <div id="dealer2Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
+                            <div id="dealer2Icon" style="width: 20px; height: 20px; background: white; border-radius: 50%; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0; display: none;">D</div>
                         </div>
                         <div id="player2Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: #1a1a1a; min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
@@ -467,7 +467,7 @@
                     <div>
                         <div id="player4Box" style="background: rgba(0,0,0,0.08); border-radius: 6px; padding: 4px 6px; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 4px;">
                             <input type="text" class="player-input" id="team2Player2" placeholder="P4" style="background: transparent; border: none; padding: 2px; color: #1a1a1a; font-size: 13px; font-weight: 600; flex: 1;">
-                            <div id="dealer4Icon" style="display: none; width: 20px; height: 20px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0;">D</div>
+                            <div id="dealer4Icon" style="width: 20px; height: 20px; background: white; border-radius: 50%; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #1a1a1a; box-shadow: 0 2px 4px rgba(0,0,0,0.3); flex-shrink: 0; display: none;">D</div>
                         </div>
                         <div id="player4Bid" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.5); border-radius: 4px; padding: 8px 4px; text-align: center; font-size: 20px; font-weight: 700; color: #1a1a1a; min-height: 48px; display: none; line-height: 1.2; margin-top: 3px;">-</div>
                     </div>
@@ -663,14 +663,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.9.0";
+        const APP_VERSION = "3.9.1";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "✅ NEW: Teams side-by-side layout (2 columns)",
-            "✅ NEW: Dealer button inline next to player name",
-            "✅ NEW: Smaller, more compact player boxes",
-            "✅ SCORING: Misère 230, Open Misère 450",
-            "✅ BRAND: Full compliance + 50% larger bids"
+            "✅ FIX: Dealer button now correctly inline next to name",
+            "✅ FIX: Removed duplicate CSS causing display issues",
+            "✅ NEW: Teams side-by-side (mobile-optimized)",
+            "✅ NEW: Compact player boxes (4px padding)",
+            "✅ SCORING: Misère 230, Open Misère 450"
         ];
         
         function showVersion() {
