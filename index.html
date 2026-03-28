@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.11.0
+    Version: 3.11.1
     Released: 2025-03-26
-    ✅ PWA ready with offline support!
+    ✅ PWA with external manifest + SW files!
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -19,7 +19,14 @@
     <meta name="theme-color" content="#0a0a0a">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiSGlsbGZyZWQncyA1MDAgU2NvcmVyIiwic2hvcnRfbmFtZSI6IjUwMCBTY29yZXIiLCJkZXNjcmlwdGlvbiI6IlNjb3JlIGtlZXBlciBmb3IgdGhlIEF1c3RyYWxpYW4gY2FyZCBnYW1lIDUwMCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMGEwYTBhIiwidGhlbWVfY29sb3IiOiIjMGEwYTBhIiwib3JpZW50YXRpb24iOiJwb3J0cmFpdCIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBeE9EQWdNVGd3SWo0OGNtVmpkQ0IzYVdSMGFEMGlNVGd3SWlCb1pXbG5hSFE5SWpFNE1DSWdabWxzYkQwaUl6QmhNR0V3WVNJdlBqeG5JSFJ5WVc1elptOXliVDBpZEhKaGJuTnNZWFJsS0Rrd0xEa3dLU0krUEdjZ2RISmhibk5tYjNKdFBTSnliM1JoZEdVb05EVXBJajQ4Y21WamRDQjRQU0l0TXpZaUlIazlJaTB6TmlJZ2QybGtkR2c5SWpJMElpQm9aV2xuYUhROUlqSTBJaUJtYVd4c1BTSWpabVptWm1abUlpQnllRDBpTWlJdlBqeHlaV04wSUhnOUlpMDJJaUI1UFNJdE16WWlJSGRwWkhSb1BTSXlOQ0lnYUdWcFoyaDBQU0l5TkNJZ1ptbHNiRDBpSXpBd1pEUmhZU0lnY25nOUlqSWlMejQ4Y21WamRDQjRQU0l5TkNJZ2VUMGlMVE0ySWlCM2FXUjBhRDBpTWpRaUlHaGxhV2RvZEQwaU1qUWlJR1pwYkd3OUlpTm1abVptWm1abUlpQnllRDBpTWlJdlBqeHlaV04wSUhnOUlpMHpOaUlnZVQwaUxUWWlJSGRwWkhSb1BTSXlOQ0lnYUdWcFoyaDBQU0l5TkNJZ1ptbHNiRDBpSTJabVptWm1aaUlnY25nOUlqSWlMejQ4Y21WamRDQjRQU0l0TmlJZ2VUMGlMVFlpSUhkcFpIUm9QU0l5TkNJZ2FHVnBaMmgwUFNJeU5DSWdabWxzYkQwaUkyWm1abVptWmlJZ2NuZzlJaklpTHo0OGNtVmpkQ0I0UFNJeU5DSWdlVDBpTFRZaUlIZHBaSFJvUFNJeU5DSWdhR1ZwWjJoMFBTSXlOQ0lnWm1sc2JEMGlJMlptWm1abVppSWdjbmc5SWpJaUx6NDhjbVZqZENCNFBTSXRNellpSUhrOUlqSTBJaUIzYVdSMGFEMGlNalFpSUdobGFXZG9kRDBpTWpRaUlHWnBiR3c5SWlObVptWm1abVlpSUhKNFBTSXlJaTgrUEhKbFkzUWdlRDBpTFRZaUlIazlJakkwSWlCM2FXUjBhRDBpTWpRaUlHaGxhV2RvZEQwaU1qUWlJR1pwYkd3OUlpTm1abVptWmlJZ2NuZzlJaklpTHo0OGNtVmpkQ0I0UFNJeU5DSWdlVDBpTWpRaUlIZHBaSFJvUFNJeU5DSWdhR1ZwWjJoMFBTSXlOQ0lnWm1sc2JEMGlJMk01WVRrMk1TSWdjbmc5SWpJaUx6NDhMMmMrUEM5blBqd3ZjM1puUGc9PSIsInNpemVzIjoiMTgweDE4MCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9LHsic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQTFNVElnTlRFeUlqNDhjbVZqZENCM2FXUjBhRDBpTlRFeUlpQm9aV2xuYUhROUlqVXhNaUlnWm1sc2JEMGlJekJoTUdFd1lTSXZQangwWlhoMElIZzlJakkxTmlJZ2VUMGlNalUySWlCbWIyNTBMV1poYldsc2VUMGlKMEpsYkd4bElFMVVJRkJzYjNRbklHWnZiblF0YzJsNlpUMGlORGdpSUdadmJuUXRkMlZwWjJoMFBTSTNNREFpSUdacGJHdzlJaU14WVRGaE1XRWlJSFJsZUhRdFlXNWphRzl5UFNKdGFXUmtiR1VpUGxKbGJHVmhjMlVnTWk0d0xqQThMM1JsZUhRK1BDOXpkbWMrIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJwdXJwb3NlIjoiYW55IG1hc2thYmxlIn1dfQ==">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="Icons/icon-180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="Icons/icon-152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="Icons/icon-120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="Icons/icon-76.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="Icons/icon-32.png">
     
     <!-- Additional PWA Meta Tags -->
     <meta name="description" content="Score keeper for the Australian card game 500">
@@ -28,7 +35,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%230a0a0a'/><g transform='translate(90,90)'><g transform='rotate(45)'><rect x='-36' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-36' width='24' height='24' fill='%2300d4aa' rx='2'/><rect x='24' y='-36' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='-6' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-36' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='-6' y='24' width='24' height='24' fill='%23ffffff' rx='2'/><rect x='24' y='24' width='24' height='24' fill='%23c9a961' rx='2'/></g></g></svg>">
     
     <style>
         :root {
@@ -671,14 +677,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.11.0";
+        const APP_VERSION = "3.11.1";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "🚀 PWA: Full offline support added!",
-            "📱 PWA: Installable as native app",
-            "💾 PWA: Service worker caching",
+            "🚀 PWA: External manifest.json + sw.js files",
+            "📱 PWA: Links to PNG icons in Icons folder",
+            "💾 PWA: Full offline support",
             "✅ MOBILE: Ultra-compact side-by-side teams",
-            "✅ Reduced widths for mobile screens"
+            "🎨 ICON: Fixed to use uploaded PNG files"
         ];
         
         function showVersion() {
@@ -2133,68 +2139,10 @@
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // Create service worker inline
-                const swCode = `
-                    const CACHE_NAME = 'hillfred-500-scorer-v3.10.0';
-                    const urlsToCache = [
-                        './',
-                        './index.html'
-                    ];
-
-                    self.addEventListener('install', event => {
-                        event.waitUntil(
-                            caches.open(CACHE_NAME)
-                                .then(cache => cache.addAll(urlsToCache))
-                        );
-                        self.skipWaiting();
-                    });
-
-                    self.addEventListener('fetch', event => {
-                        event.respondWith(
-                            caches.match(event.request)
-                                .then(response => {
-                                    if (response) {
-                                        return response;
-                                    }
-                                    return fetch(event.request).then(response => {
-                                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                                            return response;
-                                        }
-                                        const responseToCache = response.clone();
-                                        caches.open(CACHE_NAME).then(cache => {
-                                            cache.put(event.request, responseToCache);
-                                        });
-                                        return response;
-                                    }).catch(() => {
-                                        return caches.match('./index.html');
-                                    });
-                                })
-                        );
-                    });
-
-                    self.addEventListener('activate', event => {
-                        event.waitUntil(
-                            caches.keys().then(cacheNames => {
-                                return Promise.all(
-                                    cacheNames.map(cacheName => {
-                                        if (cacheName !== CACHE_NAME) {
-                                            return caches.delete(cacheName);
-                                        }
-                                    })
-                                );
-                            })
-                        );
-                        return self.clients.claim();
-                    });
-                `;
-                
-                // Create blob and register
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                
-                navigator.serviceWorker.register(swUrl)
+                navigator.serviceWorker.register('sw.js')
                     .then(registration => {
                         console.log('✅ PWA: Service Worker registered successfully');
+                        console.log('Scope:', registration.scope);
                     })
                     .catch(error => {
                         console.log('PWA: Service Worker registration failed:', error);

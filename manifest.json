@@ -1,0 +1,50 @@
+{
+  "name": "Hillfred's 500 Scorer",
+  "short_name": "500 Scorer",
+  "description": "Score keeper for the Australian card game 500",
+  "start_url": "/FHScorer/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/FHScorer/Icons/icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/FHScorer/Icons/icon-76.png",
+      "sizes": "76x76",
+      "type": "image/png"
+    },
+    {
+      "src": "/FHScorer/Icons/icon-120.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "/FHScorer/Icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/FHScorer/Icons/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/FHScorer/Icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/FHScorer/Icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
