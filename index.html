@@ -2,9 +2,9 @@
 <html lang="en">
 <!--
     Hillfred's 500 Scorer
-    Version: 3.11.1
+    Version: 3.11.2
     Released: 2025-03-26
-    ✅ PWA with external manifest + SW files!
+    ✅ Traditional scoring restored!
     Tap the Hillfred logo to view version info
 -->
 <head>
@@ -499,10 +499,10 @@
                             Pass
                         </button>
                         <button id="misereBtn" onclick="selectBid('Misère')" style="padding: 8px 10px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
-                            Misère <span style="font-size: 10px; font-weight: 500;">(230)</span>
+                            Misère <span style="font-size: 10px; font-weight: 500;">(250)</span>
                         </button>
                         <button id="openMisereBtn" onclick="selectBid('Open Misère')" style="padding: 8px 8px; background: #fef3c7; color: #92400e; border: 2px solid #fbbf24; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; min-height: 40px; white-space: nowrap;">
-                            Open Misère <span style="font-size: 10px; font-weight: 500;">(450)</span>
+                            Open Misère <span style="font-size: 10px; font-weight: 500;">(500)</span>
                         </button>
                     </div>
                 </div>
@@ -677,14 +677,14 @@
 
     <script>
         // Version tracking
-        const APP_VERSION = "3.11.1";
+        const APP_VERSION = "3.11.2";
         const VERSION_DATE = "2025-03-26";
         const VERSION_NOTES = [
-            "🚀 PWA: External manifest.json + sw.js files",
-            "📱 PWA: Links to PNG icons in Icons folder",
-            "💾 PWA: Full offline support",
-            "✅ MOBILE: Ultra-compact side-by-side teams",
-            "🎨 ICON: Fixed to use uploaded PNG files"
+            "🎯 SCORING: Traditional method restored",
+            "✅ Misère: 250 points (was 230)",
+            "✅ Open Misère: 500 points (was 450)",
+            "✅ Non-contractor: 10 pts per trick",
+            "🚀 PWA: External manifest + sw.js files"
         ];
         
         function showVersion() {
@@ -693,7 +693,7 @@
         }
         
         const SCORING_TABLE = {
-            6: { SPADES: 40, CLUBS: 60, DIAMONDS: 80, HEARTS: 100, NOTRUMPS: 120, MISERE: 230 },
+            6: { SPADES: 40, CLUBS: 60, DIAMONDS: 80, HEARTS: 100, NOTRUMPS: 120, MISERE: 250 },
             7: { SPADES: 140, CLUBS: 160, DIAMONDS: 180, HEARTS: 200, NOTRUMPS: 220 },
             8: { SPADES: 240, CLUBS: 260, DIAMONDS: 280, HEARTS: 300, NOTRUMPS: 320 },
             9: { SPADES: 340, CLUBS: 360, DIAMONDS: 380, HEARTS: 400, NOTRUMPS: 420 },
@@ -706,8 +706,8 @@
 
         function parseBidString(bidStr) {
             if (bidStr === 'Pass') return { type: 'pass', value: 0 };
-            if (bidStr === 'Misère') return { type: 'misere', value: 230 };
-            if (bidStr === 'Open Misère') return { type: 'openmisere', value: 450 };
+            if (bidStr === 'Misère') return { type: 'misere', value: 250 };
+            if (bidStr === 'Open Misère') return { type: 'openmisere', value: 500 };
             
             const match = bidStr.match(/(\d+)(♠|♣|♦|♥|NT)/);
             if (match) {
@@ -1382,9 +1382,9 @@
             let opponentPoints = 0;
 
             if (gameState.isOpenMisere) {
-                contractorPoints = gameState.actualTricks === 0 ? 450 : -450;
+                contractorPoints = gameState.actualTricks === 0 ? 500 : -500;
             } else if (gameState.isMisere) {
-                contractorPoints = gameState.actualTricks === 0 ? 230 : -230;
+                contractorPoints = gameState.actualTricks === 0 ? 250 : -250;
             } else {
                 const bidValue = SCORING_TABLE[gameState.bidTricks][gameState.bidSuit];
                 if (gameState.actualTricks >= gameState.bidTricks) {
@@ -2139,14 +2139,21 @@
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('✅ PWA: Service Worker registered successfully');
-                        console.log('Scope:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('PWA: Service Worker registration failed:', error);
-                    });
+                // Only register if on the actual GitHub Pages domain
+                const isGitHubPages = window.location.hostname === 'andyhill000-debug.github.io';
+                
+                if (isGitHubPages) {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(registration => {
+                            console.log('✅ PWA: Service Worker registered successfully');
+                            console.log('Scope:', registration.scope);
+                        })
+                        .catch(error => {
+                            console.log('⚠️ PWA: Service Worker registration failed:', error);
+                        });
+                } else {
+                    console.log('ℹ️ PWA: Service Worker not registered (not on GitHub Pages)');
+                }
             });
         }
     </script>
